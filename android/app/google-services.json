@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "88735543421",
+    "project_id": "tasty-and-easy-98a53",
+    "storage_bucket": "tasty-and-easy-98a53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88735543421:android:140fd47f73ff2bbece4114",
+        "android_client_info": {
+          "package_name": "com.example.tasty_and_easy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQzWvwntfrlSZC53KTlIjGH3goK-FQMME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
