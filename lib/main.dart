@@ -1,16 +1,18 @@
-import 'package:tasty_and_easy/window_menu/FirstPage.dart';
-import 'package:tasty_and_easy/window_menu/account_window.dart';
+import 'package:tasty_and_easy/window_login/FirstPage.dart';
+import 'package:tasty_and_easy/window_login/account_window.dart';
+
+import 'package:tasty_and_easy/window_login/login_window.dart';
+import 'package:tasty_and_easy/window_login/reset_password_window.dart';
+import 'package:tasty_and_easy/window_login/singup_window.dart';
+import 'package:tasty_and_easy/window_login/verify_email_window.dart';
+
 import 'package:tasty_and_easy/window_menu/home_window.dart';
-import 'package:tasty_and_easy/window_menu/like_window.dart';
 
-
-import 'package:tasty_and_easy/window_menu/login_window.dart';
-import 'package:tasty_and_easy/window_menu/reset_password_window.dart';
-import 'package:tasty_and_easy/window_menu/singup_window.dart';
-import 'package:tasty_and_easy/window_menu/verify_email_window.dart';
 import 'package:tasty_and_easy/services_firebase/firebase_window.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tasty_and_easy/window_menu/like_window.dart';
+import 'package:tasty_and_easy/window_menu/listdishes.dart';
 
 
 
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignUpScreen(),
         '/reset_password': (context) => const ResetPasswordScreen(),
         '/verify_email': (context) => const VerifyEmailScreen(),
+        '/listdishes': (context) => const listdishes(),
       },
       initialRoute: '/',
     );

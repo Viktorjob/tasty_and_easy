@@ -16,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailTextInputController = TextEditingController();
   TextEditingController passwordTextInputController = TextEditingController();
   TextEditingController nameTextInputController = TextEditingController();
+  //глобалный ключ для проверки юзера
   final formKey = GlobalKey<FormState>();
 
   @override
