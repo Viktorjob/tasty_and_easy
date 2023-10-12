@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class FirstPage extends StatefulWidget {
@@ -9,25 +10,96 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  Query dbRef = FirebaseDatabase.instance.reference().child('listrecept');
+
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Главная страница'),
-             ),
-      body: SafeArea(
-        child: Center(
-          child: (user == null)
-              ? const Text("Контент для НЕ зарегистрированных в системе")
-              : const Text('Контент для ЗАРЕГИСТРИРОВАННЫХ в системе'),
+        title: Text("Main page"),
+      ),
+      body: StreamBuilder(
+        stream: dbRef.onValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
 
+          if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+            Map<String, dynamic> users = Map<String, dynamic>.from(
+              (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
+            );
+
+            return Padding(
+              padding: EdgeInsets.only(top:50),
+              child: Container(
+                width: 500,
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: users.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final user = users.values.elementAt(index);
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: listItem(user: user),
+                    );
+                  },
+                ),
+              ),
+            );
+          } else {
+            return Text("Data is null");
+          }
+        },
+      ),
+    );
+  }
+
+  Widget listItem({required Map user}) {
+    return InkWell(
+      onTap: () {
+
+      },
+      child: Container(
+        width: 100,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(2, 2),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                user['image'].toString(),
+                fit: BoxFit.cover,
+              ),
+              Container(
+                height: 10,
+                color: Colors.black.withOpacity(0.6),
+                child: Center(
+                  child: Text(
+                    user['name'],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-

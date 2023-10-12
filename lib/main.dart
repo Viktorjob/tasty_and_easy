@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignUpScreen(),
         '/reset_password': (context) => const ResetPasswordScreen(),
         '/verify_email': (context) => const VerifyEmailScreen(),
-        '/listdishes': (context) => const listdishes(),
+        //'/listdishes': (context) =>   ListDishes(categoryName: '',),
       },
       initialRoute: '/',
     );
