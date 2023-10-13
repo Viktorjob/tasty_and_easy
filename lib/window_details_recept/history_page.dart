@@ -1,49 +1,58 @@
 import 'package:flutter/material.dart';
+
 Future<void> History_page(BuildContext context, String title, String history) async {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
-      return ListView(
-        children: [
-          AlertDialog(
-            contentPadding: EdgeInsets.all(20.0),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(
-                    title, // Используйте переданный заголовок
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.amber,
-                    ),
+      return Dialog(
+        insetPadding: EdgeInsets.all(16),
+        child: Container(
+          width: 350,
+          height: 400,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                    fontSize: 20,
                   ),
                 ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.only(left: 1.0 , top: 20), // Добавляем отступ слева
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(history,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      history,
                       style: TextStyle(
                         color: Colors.black,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Close'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-        ],
+        ),
       );
     },
   );

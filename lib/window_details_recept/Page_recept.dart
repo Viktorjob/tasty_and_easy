@@ -11,8 +11,8 @@ class Page_recept extends StatefulWidget {
   @override
   _Page_receptState createState() => _Page_receptState();
 }
-class _Page_receptState extends State<Page_recept> {
 
+class _Page_receptState extends State<Page_recept> {
   Query? dbRef;
 
   @override
@@ -23,212 +23,151 @@ class _Page_receptState extends State<Page_recept> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          title: Text(widget.dishName),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightGreen,
+        leading: IconButton(
+
+          icon: Icon(Icons.arrow_back),
+
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-        body: StreamBuilder(
-          stream: dbRef!.onValue, // Используйте ваш запрос к Firebase
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
-              Map<String, dynamic> data = Map<String, dynamic>.from(
-                (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
-              );
-              print(data.toString());
-              // Ваши данные доступны в переменной 'data', их можно отобразить или обработать здесь
-              return ListView(
+        title: Text(widget.dishName),
+      ),
+      body: StreamBuilder(
+        stream: dbRef!.onValue,
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+            Map<String, dynamic> data = Map<String, dynamic>.from(
+              (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
+            );
+
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10), // Устанавливаем радиус скругления углов
-                              child: Image.network(
-                                data['image_url'].toString(),
-                                fit: BoxFit.cover,
-                                width: 400, // Задаем ширину изображения (можете изменить на свое усмотрение)
-                                height: 200, // Задаем высоту изображения (можете изменить на свое усмотрение)
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              History_page(
-                                context,
-                                widget.dishName, // Передаем название блюда в качестве заголовка
-                                data['history'], // Передаем ингредиенты
-                              );
-                            },
-                            child: Icon(
-                              Icons.history_edu,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 140.0, top: 20),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.access_time, color: Colors.black), // Иконка часов
-                                  SizedBox(width: 8), // Отступ между иконкой и текстом
-                                  Text(
-                                    data['time'],
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 140.0, top: 20), // Добавляем отступ слева
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['ingredients'],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
                         ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        data['image_url'].toString(),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 200,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child:Text(data['ingredient_1']),
-                            ),
-                            Align(
-                              child:Text(' ________________________________________ '),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child:Text(data['quantity_1']),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child:Text(data['ingredient_2']),
-                            ),
-                            Align(
-                              child:Text(' ________________________________________ '),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child:Text(data['quantity_2']),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child:Text(data['ingredient_3']),
-                            ),
-                            Align(
-                              child:Text(' ________________________________________ '),
-                            ),
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child:Text(data['quantity_3']),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 100.0 , top: 20), // Добавляем отступ слева
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['instructions'],
-                            style: TextStyle(
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.access_time, color: Colors.black),
+                        SizedBox(width: 8),
+                        Text(
+                          data['time'],
+                          style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
-                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0), // Добавляем отступ слева
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['1_step']),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['2_step']),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['3_step']),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['4_step']),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(data['5_step']),
-                        ),
-                      ),
-                    ],
-
-
+                      ],
+                    ),
                   ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      onTap: () {
+                        History_page(
+                          context,
+                          widget.dishName,
+                          data['history'],
+                        );
+                      },
+                      child: Icon(
+                        Icons.history_edu,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Ingredients:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  _buildIngredientRow(data, 'ingredient_1', 'quantity_1'),
+                  _buildIngredientRow(data, 'ingredient_2', 'quantity_2'),
+                  _buildIngredientRow(data, 'ingredient_3', 'quantity_3'),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Instructions:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  _buildStep(data, '1_step'),
+                  _buildStep(data, '2_step'),
+                  _buildStep(data, '3_step'),
+                  _buildStep(data, '4_step'),
+                  _buildStep(data, '5_step'),
                 ],
-              );
-            } else {
-              return Center(
-                child: Text("Data is null"),
-              );
-            }
-          },
-        ),
+              ),
+            );
+          } else {
+            return Center(
+              child: Text("Data is null"),
+            );
+          }
+        },
       ),
     );
+  }
+
+  Widget _buildIngredientRow(Map<String, dynamic> data, String ingredientKey, String quantityKey) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Text(data[ingredientKey]),
+          SizedBox(width: 8),
+          Text('________________________________________'),
+          SizedBox(width: 8),
+          Text(data[quantityKey]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStep(Map<String, dynamic> data, String stepKey) {
+    if (data[stepKey].isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(data[stepKey]),
+      );
+    } else {
+      return SizedBox.shrink();
+    }
   }
 }

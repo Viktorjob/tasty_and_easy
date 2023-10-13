@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 
-
 class ListDishes extends StatefulWidget {
   final String dishKey;
 
@@ -23,11 +22,13 @@ class _ListDishesState extends State<ListDishes> {
     super.initState();
     dbRef = FirebaseDatabase.instance.reference().child(dishKey);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(dishKey),
+        backgroundColor: Colors.lightGreen,
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
@@ -52,7 +53,7 @@ class _ListDishesState extends State<ListDishes> {
                 final user1 = users.values.elementAt(index);
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: listItem(user1: user1),
+                  child: ListItem(user1: user1),
                 );
               },
             );
@@ -63,14 +64,29 @@ class _ListDishesState extends State<ListDishes> {
       ),
     );
   }
+}
 
-  Widget listItem({required Map user1}) {
+class ListItem extends StatefulWidget {
+  final Map user1;
 
-    return InkWell(
+  ListItem({required this.user1});
+
+  @override
+  _ListItemState createState() => _ListItemState();
+}
+
+class _ListItemState extends State<ListItem> {
+  bool isHeartActive = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Color heartColor = isHeartActive ? Colors.yellow : Colors.white;
+
+    return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => Page_recept(dishName: user1['name']),
+            builder: (context) => Page_recept(dishName: widget.user1['name']),
           ),
         );
       },
@@ -92,18 +108,44 @@ class _ListDishesState extends State<ListDishes> {
             fit: StackFit.expand,
             children: [
               Image.network(
-                user1['image_url'].toString(),
+                widget.user1['image_url'].toString(),
                 fit: BoxFit.cover,
               ),
               Container(
                 color: Colors.black.withOpacity(0.6),
                 child: Center(
                   child: Text(
-                    user1['name'] != null ? user1['name'] : '', // Проверка на null
+                    widget.user1['name'] != null ? widget.user1['name'] : '',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 145,
+                right: 10,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isHeartActive = !isHeartActive;
+                    });
+
+                    if (isHeartActive) {
+                      DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('Like_list');
+                      likeListRef.push().set({
+                        'name': widget.user1['name'],
+                        'image_url': widget.user1['image_url'],
+
+                      });
+                    } else {
+                    }
+                  },
+                  child: Icon(
+                    Icons.favorite,
+                    size: 28,
+                    color: heartColor,
                   ),
                 ),
               ),
@@ -113,5 +155,4 @@ class _ListDishesState extends State<ListDishes> {
       ),
     );
   }
-
 }

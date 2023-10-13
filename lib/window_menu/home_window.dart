@@ -1,27 +1,22 @@
+import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_login/FirstPage.dart';
 import 'package:tasty_and_easy/window_login/account_window.dart';
-import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_menu/like_window.dart';
 import 'package:tasty_and_easy/window_menu/list.dart';
 
-/// Flutter code sample for [BottomNavigationBar].
-
-
-
 class home extends StatelessWidget {
-  const home({super.key});
+  const home({Key? key});
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      body:BottomNavigationBarExample(),
+    return MaterialApp(
+      home: BottomNavigationBarExample(),
     );
   }
 }
 
 class BottomNavigationBarExample extends StatefulWidget {
-  const BottomNavigationBarExample({super.key});
+  const BottomNavigationBarExample({Key? key});
 
   @override
   State<BottomNavigationBarExample> createState() =>
@@ -51,31 +46,43 @@ class _BottomNavigationBarExampleState
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.list),
-              label: 'Recept',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              label: 'like',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school),
-              label: 'account',
-            ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFFA4A4A4), // Фон для нижней навигационной панели
+          border: Border(
+            top: BorderSide(color: Color(0xFFA4A4A4), width: 8.0),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            buildNavigationBarItem(Icons.home, 0),
+            buildNavigationBarItem(Icons.list, 1),
+            buildNavigationBarItem(Icons.favorite, 2),
+            buildNavigationBarItem(Icons.account_circle, 3),
           ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.amber[800], // Цвет для активной кнопки
-          unselectedItemColor: Colors.grey, // Цвет для неактивных кнопок
-          onTap: _onItemTapped,
-        )
+        ),
+        padding: EdgeInsets.only(bottom: 8.0),
+      ),
+    );
+  }
 
+  Widget buildNavigationBarItem(IconData icon, int index) {
+    final isSelected = index == _selectedIndex;
+
+    return GestureDetector(
+      onTap: () => _onItemTapped(index),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isSelected ? Colors.lightGreen : Colors.transparent,
+        ),
+        child: Icon(
+          icon,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

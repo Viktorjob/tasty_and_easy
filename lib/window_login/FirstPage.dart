@@ -17,7 +17,10 @@ class _FirstPageState extends State<FirstPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Main page"),
+        backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
       ),
+
+
       body: StreamBuilder(
         stream: dbRef.onValue,
         builder: (context, snapshot) {

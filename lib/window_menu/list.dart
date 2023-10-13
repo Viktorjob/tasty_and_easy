@@ -15,6 +15,10 @@ class _RecipeListState extends State<RecipeList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Main page"),
+        backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
+      ),
       body: StreamBuilder(
         stream: dbRef.onValue,
         builder: (context, snapshot) {
