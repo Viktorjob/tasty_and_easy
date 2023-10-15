@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_menu/listdishes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LikeWindow extends StatefulWidget {
   const LikeWindow({Key? key}) : super(key: key);
@@ -11,13 +12,14 @@ class LikeWindow extends StatefulWidget {
 
 class _LikeWindowState extends State<LikeWindow> {
   Query dbRef = FirebaseDatabase.instance.reference().child('Like_list');
+  Set<String> likedItems = Set();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Main page"),
-        backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
+        backgroundColor: Colors.lightGreen,
       ),
       body: StreamBuilder(
         stream: dbRef.onValue,
@@ -31,26 +33,14 @@ class _LikeWindowState extends State<LikeWindow> {
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
 
-            /* users.forEach((key, value) {
-              print("----------------------");
-              print('Category: $key');
-              value.forEach((categoryKey, categoryValue) {
-                print('  $categoryKey: $categoryValue');
-              });
-            });*/
-
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 0.0,
-                mainAxisSpacing: 0.0,
-              ),
+            return ListView.builder(
               itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
+                final key = users.keys.elementAt(index);
                 final user = users.values.elementAt(index);
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: listItem(user: user),
+                  child: listItem(user: user, itemKey: key),
                 );
               },
             );
@@ -62,11 +52,27 @@ class _LikeWindowState extends State<LikeWindow> {
     );
   }
 
-  Widget listItem({required Map user}) {
+  void deleteData(String key) {
+    DatabaseReference reference = FirebaseDatabase.instance.reference().child(
+        'Like_list');
 
+    reference.child(key).remove().then((_) {
+      print('Data deleted successfully');
+    }).catchError((error) {
+      print('Failed to delete data: $error');
+    });
+  }
+
+  Widget listItem({required Map user, required String itemKey}) {
     String? category = user['name'];
+
+    if (likedItems.contains(itemKey)) {
+      return Container(); // Элемент уже добавлен, не отображаем его.
+    }
+
     return InkWell(
       onTap: () {
+        likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
         print('Tapped on $category');
         if (category != null) {
           Navigator.of(context).push(
@@ -76,7 +82,6 @@ class _LikeWindowState extends State<LikeWindow> {
           );
         }
       },
-
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -89,29 +94,35 @@ class _LikeWindowState extends State<LikeWindow> {
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                user['image'].toString(),
+        child: Row(
+          children: [
+            Container(
+              width: 100,
+              child: Image.network(
+                user['image_url'].toString(),
                 fit: BoxFit.cover,
               ),
-              Container(
-                color: Colors.black.withOpacity(0.6),
-                child: Center(
-                  child: Text(
-                    user['name'],
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  user['name'],
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                deleteData(itemKey);
+                likedItems.remove(itemKey); // Удаляем элемент из множества.
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -9,8 +9,8 @@ class home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: BottomNavigationBarExample(),
+    return Scaffold(
+      body: BottomNavigationBarExample(),
     );
   }
 }
@@ -80,7 +80,7 @@ class _BottomNavigationBarExampleState
         ),
         child: Icon(
           icon,
-          color: Colors.white,
+          color: isSelected ? Colors.white : Colors.white, // Изменение цвета иконки для активной и неактивной кнопки
         ),
       ),
     );

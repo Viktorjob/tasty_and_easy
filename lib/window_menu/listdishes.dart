@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 
 class ListDishes extends StatefulWidget {
@@ -14,6 +15,7 @@ class ListDishes extends StatefulWidget {
 class _ListDishesState extends State<ListDishes> {
   Query? dbRef;
   String dishKey;
+  Map<String, bool> likedItems = {};
 
   _ListDishesState(this.dishKey);
 
@@ -51,9 +53,20 @@ class _ListDishesState extends State<ListDishes> {
               itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
                 final user1 = users.values.elementAt(index);
+                final itemName = user1['name'];
+                final isLiked = likedItems[itemName] ?? false;
+
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ListItem(user1: user1),
+                  child: ListItem(
+                    user1: user1,
+                    isLiked: isLiked,
+                    toggleLike: (value) {
+                      setState(() {
+                        likedItems[itemName] = value;
+                      });
+                    },
+                  ),
                 );
               },
             );
@@ -68,8 +81,10 @@ class _ListDishesState extends State<ListDishes> {
 
 class ListItem extends StatefulWidget {
   final Map user1;
+  final bool isLiked;
+  final ValueChanged<bool> toggleLike;
 
-  ListItem({required this.user1});
+  ListItem({required this.user1, required this.isLiked, required this.toggleLike});
 
   @override
   _ListItemState createState() => _ListItemState();
@@ -77,6 +92,12 @@ class ListItem extends StatefulWidget {
 
 class _ListItemState extends State<ListItem> {
   bool isHeartActive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isHeartActive = widget.isLiked;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,14 +153,15 @@ class _ListItemState extends State<ListItem> {
                       isHeartActive = !isHeartActive;
                     });
 
+                    widget.toggleLike(isHeartActive);
+
                     if (isHeartActive) {
-                      DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('Like_list');
+                      DatabaseReference likeListRef =
+                      FirebaseDatabase.instance.reference().child('Like_list');
                       likeListRef.push().set({
                         'name': widget.user1['name'],
                         'image_url': widget.user1['image_url'],
-
                       });
-                    } else {
                     }
                   },
                   child: Icon(
