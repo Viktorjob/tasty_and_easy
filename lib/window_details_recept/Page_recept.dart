@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Page_recept extends StatefulWidget {
   final String dishName;
@@ -19,12 +20,27 @@ class _Page_receptState extends State<Page_recept> {
   void initState() {
     super.initState();
     dbRef = FirebaseDatabase.instance.reference().child('Breakfast/${widget.dishName}');
+    loadIsFavorite();
   }
 
+  void loadIsFavorite() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool favorite = prefs.getBool(widget.dishName) ?? false;
+    setState(() {
+      isFavorite = favorite;
+    });
+  }
+
+  // Определите метод saveIsFavorite для сохранения состояния в SharedPreferences
+  void saveIsFavorite(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(widget.dishName, value);
+  }
   void toggleFavorite() {
     setState(() {
       isFavorite = !isFavorite;
     });
+    saveIsFavorite(isFavorite); // Сохранение значения в SharedPreferences
 
     DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('Like_list');
 
@@ -40,30 +56,39 @@ class _Page_receptState extends State<Page_recept> {
   }
 
   Widget _buildIngredientRow(Map<String, dynamic> data, String ingredientKey, String quantityKey) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Text(data[ingredientKey]),
-          SizedBox(width: 8),
-          Text('________________________________________'),
-          SizedBox(width: 8),
-          Text(data[quantityKey]),
-        ],
-      ),
-    );
+    if (data[ingredientKey] != null && data[quantityKey] != null) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Text(data[ingredientKey]),
+            Expanded(
+              child: Divider(), // Используйте Divider внутри Expanded
+            ),
+            Text(data[quantityKey]),
+          ],
+        ),
+      );
+    } else {
+      return SizedBox.shrink(); // Скрывает виджет, если данные `null`.
+    }
   }
 
+
+
+
   Widget _buildStep(Map<String, dynamic> data, String stepKey) {
-    if (data[stepKey].isNotEmpty) {
+    if (data[stepKey] != null) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(data[stepKey]),
       );
     } else {
-      return SizedBox.shrink();
+      return SizedBox.shrink(); // Скрывает виджет, если данные `null`.
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +106,12 @@ class _Page_receptState extends State<Page_recept> {
       body: StreamBuilder(
         stream: dbRef!.onValue,
         builder: (context, snapshot) {
+          print('Snapshot: $snapshot');
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             data = Map<String, dynamic>.from(
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
-
+            print('$data');
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,16 +164,7 @@ class _Page_receptState extends State<Page_recept> {
                             color: isFavorite ? Colors.red : Colors.grey,
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            // Добавьте код для открытия истории.
-                          },
-                          child: Icon(
-                            Icons.history_edu,
-                            color: Colors.orange,
-                          ),
-                        ),
-                      ],
+                                              ],
                     ),
                   ),
                   Padding(
@@ -164,6 +181,11 @@ class _Page_receptState extends State<Page_recept> {
                   _buildIngredientRow(data!, 'ingredient_1', 'quantity_1'),
                   _buildIngredientRow(data!, 'ingredient_2', 'quantity_2'),
                   _buildIngredientRow(data!, 'ingredient_3', 'quantity_3'),
+                  _buildIngredientRow(data!, 'ingredient_4', 'quantity_4'),
+                  _buildIngredientRow(data!, 'ingredient_5', 'quantity_5'),
+                  _buildIngredientRow(data!, 'ingredient_6', 'quantity_6'),
+                  _buildIngredientRow(data!, 'ingredient_7', 'quantity_7'),
+                  _buildIngredientRow(data!, 'ingredient_8', 'quantity_8'),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
@@ -180,6 +202,9 @@ class _Page_receptState extends State<Page_recept> {
                   _buildStep(data!, '3_step'),
                   _buildStep(data!, '4_step'),
                   _buildStep(data!, '5_step'),
+                  _buildStep(data!, '6_step'),
+                  _buildStep(data!, '7_step'),
+                  _buildStep(data!, '8_step'),
                 ],
               ),
             );
