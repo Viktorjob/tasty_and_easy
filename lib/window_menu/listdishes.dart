@@ -43,6 +43,10 @@ class _ListDishesState extends State<ListDishes> {
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
 
+            users.forEach((key, value) {
+              print('$key: $value');
+            });
+
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -76,6 +80,7 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(

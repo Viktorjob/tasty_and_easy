@@ -74,12 +74,12 @@ class _LikeWindowState extends State<LikeWindow> {
       onTap: () {
         likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
         print('Tapped on $category');
-        if (category != null) {
+        if (category != null) {/*
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => ListDishes(dishKey: category),
             ),
-          );
+          );*/
         }
       },
       child: Container(

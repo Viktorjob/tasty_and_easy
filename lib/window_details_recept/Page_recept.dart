@@ -106,7 +106,7 @@ class _Page_receptState extends State<Page_recept> {
       body: StreamBuilder(
         stream: dbRef!.onValue,
         builder: (context, snapshot) {
-          print('Snapshot: $snapshot');
+
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             data = Map<String, dynamic>.from(
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
