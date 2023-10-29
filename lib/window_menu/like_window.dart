@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/window_menu/listdishes.dart';
+import 'package:tasty_and_easy/drawer_menu/menu.dart';
+import 'package:tasty_and_easy/window_menu/home_window.dart';
+import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LikeWindow extends StatefulWidget {
@@ -17,8 +19,9 @@ class _LikeWindowState extends State<LikeWindow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SecondMenuDrawer(),
       appBar: AppBar(
-        title: Text("Main page"),
+        title: Text("Main page3"),
         backgroundColor: Colors.lightGreen,
       ),
       body: StreamBuilder(
@@ -74,12 +77,12 @@ class _LikeWindowState extends State<LikeWindow> {
       onTap: () {
         likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
         print('Tapped on $category');
-        if (category != null) {/*
+        if (category != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => ListDishes(dishKey: category),
             ),
-          );*/
+          );
         }
       },
       child: Container(

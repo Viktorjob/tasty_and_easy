@@ -1,4 +1,4 @@
-import 'package:tasty_and_easy/window_login/FirstPage.dart';
+import 'package:tasty_and_easy/window_menu/FirstPage.dart';
 import 'package:tasty_and_easy/window_login/account_window.dart';
 
 import 'package:tasty_and_easy/window_login/login_window.dart';
@@ -12,7 +12,7 @@ import 'package:tasty_and_easy/services_firebase/firebase_window.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tasty_and_easy/window_menu/like_window.dart';
-import 'package:tasty_and_easy/window_menu/listdishes.dart';
+import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 
 
 

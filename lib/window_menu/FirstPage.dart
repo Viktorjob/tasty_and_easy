@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:tasty_and_easy/drawer_menu/menu.dart';
+import 'package:tasty_and_easy/window_menu/home_window.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SecondMenuDrawer(),
       appBar: AppBar(
         title: Text("Main page"),
         backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar

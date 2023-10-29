@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/window_login/FirstPage.dart';
+import 'package:tasty_and_easy/drawer_menu/menu.dart';
+import 'package:tasty_and_easy/window_menu/FirstPage.dart';
 import 'package:tasty_and_easy/window_login/account_window.dart';
 import 'package:tasty_and_easy/window_menu/like_window.dart';
 import 'package:tasty_and_easy/window_menu/list.dart';
@@ -10,10 +11,12 @@ class home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SecondMenuDrawer(),
       body: BottomNavigationBarExample(),
     );
   }
 }
+
 
 class BottomNavigationBarExample extends StatefulWidget {
   const BottomNavigationBarExample({Key? key});

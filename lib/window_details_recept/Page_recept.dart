@@ -19,7 +19,7 @@ class _Page_receptState extends State<Page_recept> {
   @override
   void initState() {
     super.initState();
-    dbRef = FirebaseDatabase.instance.reference().child('Breakfast/${widget.dishName}');
+    dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
     loadIsFavorite();
   }
 

@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/window_menu/listdishes.dart';
+import 'package:tasty_and_easy/drawer_menu/menu.dart';
+import 'package:tasty_and_easy/window_menu/home_window.dart';
+import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 
 class RecipeList extends StatefulWidget {
   const RecipeList({Key? key}) : super(key: key);
@@ -15,8 +17,9 @@ class _RecipeListState extends State<RecipeList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SecondMenuDrawer(),
       appBar: AppBar(
-        title: Text("Main page"),
+        title: Text("Main page1"),
         backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
       ),
       body: StreamBuilder(
