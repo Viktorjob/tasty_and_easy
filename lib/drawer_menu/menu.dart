@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/filters/window_filters.dart';
+import 'package:tasty_and_easy/filters/tttt.dart';
 
 class SecondMenuDrawer extends StatelessWidget {
   @override
@@ -17,7 +17,7 @@ class SecondMenuDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Filters(onFilterApplied: ( List <String> filters ) {  }, allDishes: [],),
+                    builder: (context) => Filters(),
                   ),
                 );
               },

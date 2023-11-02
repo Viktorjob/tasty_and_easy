@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
+import 'package:tasty_and_easy/window_details_recept/filtrs_window.dart';
 
 class ListDishes extends StatefulWidget {
   final String dishKey;
@@ -15,6 +15,10 @@ class ListDishes extends StatefulWidget {
 class _ListDishesState extends State<ListDishes> {
   Query? dbRef;
   String dishKey;
+  bool glutenFree = false;
+  bool lactoseFree = false;
+  bool vegetarian = false;
+  bool vegan = false;
 
   _ListDishesState(this.dishKey);
 
@@ -30,6 +34,29 @@ class _ListDishesState extends State<ListDishes> {
       appBar: AppBar(
         title: Text(dishKey),
         backgroundColor: Colors.lightGreen,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              filtrs_details_window(
+                context,
+                glutenFree,
+                lactoseFree,
+                vegetarian,
+                vegan,
+                    (gluten, lactose, veg, vegan) {
+                  setState(() {
+                    glutenFree = gluten;
+                    lactoseFree = lactose;
+                    vegetarian = veg;
+                    this.vegan = vegan; // Обновляем значение vegan в этом классе
+                  });
+                },
+              );
+
+            },
+          ),
+        ],
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
@@ -43,9 +70,23 @@ class _ListDishesState extends State<ListDishes> {
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
 
-            users.forEach((key, value) {
-              print('$key: $value');
-            });
+            final filteredDishes = users.values.where((dish) {
+              final hasGluten = dish['Gluten'] == glutenFree;
+              final hasLactose = dish['Lactose'] == lactoseFree;
+              final isVegetarian = dish['Vegetarian'] == vegetarian;
+              final isVegan = dish['Vegan'] == vegan;
+
+              // Если все фильтры отключены, показываем все блюда
+              if (!glutenFree && !lactoseFree && !vegetarian && !vegan) {
+                return true;
+              }
+
+              return hasGluten && hasLactose && isVegetarian && isVegan;
+            }).toList();
+
+
+
+
 
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -53,9 +94,9 @@ class _ListDishesState extends State<ListDishes> {
                 crossAxisSpacing: 0.0,
                 mainAxisSpacing: 0.0,
               ),
-              itemCount: users.length,
+              itemCount: filteredDishes.length,
               itemBuilder: (BuildContext context, int index) {
-                final user1 = users.values.elementAt(index);
+                final user1 = filteredDishes[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListItem(
@@ -80,7 +121,6 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
