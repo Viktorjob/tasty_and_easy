@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/drawer_menu/menu.dart';
+import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 import 'package:tasty_and_easy/window_menu/home_window.dart';
 import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,9 +81,10 @@ class _LikeWindowState extends State<LikeWindow> {
         if (category != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ListDishes(dishKey: category),
+              builder: (context) => Page_recept(dishName: category),
             ),
           );
+
         }
       },
       child: Container(

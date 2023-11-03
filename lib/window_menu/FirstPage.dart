@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:tasty_and_easy/country_dishes/dishes.dart';
 import 'package:tasty_and_easy/drawer_menu/menu.dart';
 import 'package:tasty_and_easy/window_menu/home_window.dart';
 
@@ -12,14 +13,17 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  Query dbRef = FirebaseDatabase.instance.reference().child('listrecept');
+  Query dbRef = FirebaseDatabase.instance.reference().child('Country');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SecondMenuDrawer(),
       appBar: AppBar(
-        title: Text("Main page"),
+        title: Padding(
+          padding: const EdgeInsets.only( left: 65.0),
+          child: Text("Tasty of easy"),
+        ),
         backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
       ),
 
@@ -40,7 +44,7 @@ class _FirstPageState extends State<FirstPage> {
               padding: EdgeInsets.only(top:50),
               child: Container(
                 width: 500,
-                height: 50,
+                height: 200,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: users.length,
@@ -65,10 +69,14 @@ class _FirstPageState extends State<FirstPage> {
   Widget listItem({required Map user}) {
     return InkWell(
       onTap: () {
-
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => country_dish(),
+          ),
+        );
       },
       child: Container(
-        width: 100,
+        width: 200,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -86,7 +94,7 @@ class _FirstPageState extends State<FirstPage> {
             fit: StackFit.expand,
             children: [
               Image.network(
-                user['image'].toString(),
+                user['image_url'].toString(),
                 fit: BoxFit.cover,
               ),
               Container(

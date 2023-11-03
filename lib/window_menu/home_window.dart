@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/drawer_menu/menu.dart';
 import 'package:tasty_and_easy/window_menu/FirstPage.dart';
-import 'package:tasty_and_easy/window_login/account_window.dart';
+import 'package:tasty_and_easy/window_menu/account_window.dart';
 import 'package:tasty_and_easy/window_menu/like_window.dart';
 import 'package:tasty_and_easy/window_menu/list.dart';
 

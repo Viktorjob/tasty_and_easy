@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-typedef OnFilterChangedCallback = void Function(bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan);
-void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan, OnFilterChangedCallback onFilterChanged) {
+typedef OnFilterChangedCallback = void Function(bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan, bool halal);
+void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan, bool halal,  OnFilterChangedCallback onFilterChanged) {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
@@ -19,7 +19,7 @@ void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFr
                         glutenFree = isChecked;
                       });
                     },
-                    title: Text('Gluten-free'),
+                    title: Text('Gluten free'),
                   ),
                   SwitchListTile(
                     value: lactoseFree,
@@ -28,7 +28,7 @@ void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFr
                         lactoseFree = isChecked;
                       });
                     },
-                    title: Text('Lactose-free'),
+                    title: Text('Lactose free'),
                   ),
                   SwitchListTile(
                     value: vegetarian,
@@ -37,7 +37,7 @@ void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFr
                         vegetarian = isChecked;
                       });
                     },
-                    title: Text('Vegetarian'),
+                    title: Text('Vegetarian dishes'),
                   ),
                   SwitchListTile(
                     value: vegan,
@@ -46,8 +46,19 @@ void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFr
                         vegan = isChecked;
                       });
                     },
-                    title: Text('Vegan'),
+                    title: Text('Vegan dishes'),
                   ),
+                  SwitchListTile(
+                    value: halal,
+                    onChanged: (isChecked) {
+                      setState(() {
+                        halal = isChecked;
+                      });
+                    },
+                    title: Text('Halal dishes'),
+                  ),
+
+
                 ],
               ),
             ),
@@ -55,7 +66,7 @@ void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFr
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  onFilterChanged(glutenFree, lactoseFree, vegetarian, vegan);
+                  onFilterChanged(glutenFree, lactoseFree, vegetarian, vegan, halal );
                 },
                 child: Text('Apply'),
               ),

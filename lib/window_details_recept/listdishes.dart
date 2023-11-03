@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 import 'package:tasty_and_easy/window_details_recept/filtrs_window.dart';
+import 'package:tasty_and_easy/window_menu/home_window.dart';
 
 class ListDishes extends StatefulWidget {
   final String dishKey;
@@ -19,6 +20,7 @@ class _ListDishesState extends State<ListDishes> {
   bool lactoseFree = false;
   bool vegetarian = false;
   bool vegan = false;
+  bool halal = false;
 
   _ListDishesState(this.dishKey);
 
@@ -33,6 +35,7 @@ class _ListDishesState extends State<ListDishes> {
     return Scaffold(
       appBar: AppBar(
         title: Text(dishKey),
+
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
           IconButton(
@@ -44,12 +47,14 @@ class _ListDishesState extends State<ListDishes> {
                 lactoseFree,
                 vegetarian,
                 vegan,
-                    (gluten, lactose, veg, vegan) {
+                halal,
+                    (gluten, lactose, veg, vegan, halal_dish) {
                   setState(() {
                     glutenFree = gluten;
                     lactoseFree = lactose;
                     vegetarian = veg;
-                    this.vegan = vegan; // Обновляем значение vegan в этом классе
+                    halal = halal_dish;
+                    this.vegan = vegan;
                   });
                 },
               );
@@ -64,27 +69,18 @@ class _ListDishesState extends State<ListDishes> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           }
-
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             Map<String, dynamic> users = Map<String, dynamic>.from(
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
 
             final filteredDishes = users.values.where((dish) {
-              final hasGluten = dish['Gluten'] == glutenFree;
-              final hasLactose = dish['Lactose'] == lactoseFree;
-              final isVegetarian = dish['Vegetarian'] == vegetarian;
-              final isVegan = dish['Vegan'] == vegan;
-
-              // Если все фильтры отключены, показываем все блюда
-              if (!glutenFree && !lactoseFree && !vegetarian && !vegan) {
-                return true;
-              }
-
-              return hasGluten && hasLactose && isVegetarian && isVegan;
+              return (!glutenFree || dish['Gluten'] == glutenFree) &&
+                  (!lactoseFree || dish['Lactose'] == lactoseFree) &&
+                  (!vegetarian || dish['Vegetarian'] == vegetarian) &&
+                  (!vegan || dish['Vegan'] == vegan) &&
+                  (!halal || dish['Halal'] == halal);
             }).toList();
-
-
 
 
 
@@ -121,6 +117,7 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(

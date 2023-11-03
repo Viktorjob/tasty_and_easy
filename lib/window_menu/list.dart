@@ -19,7 +19,7 @@ class _RecipeListState extends State<RecipeList> {
     return Scaffold(
       drawer: SecondMenuDrawer(),
       appBar: AppBar(
-        title: Text("Main page1"),
+        title: Text("Category"),
         backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
       ),
       body: StreamBuilder(
