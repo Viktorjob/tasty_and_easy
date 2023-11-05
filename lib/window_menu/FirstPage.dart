@@ -41,23 +41,36 @@ class _FirstPageState extends State<FirstPage> {
             );
 
             return Padding(
-              padding: EdgeInsets.only(top:50),
-              child: Container(
-                width: 500,
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: users.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final user = users.values.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: listItem(user: user),
-                    );
-                  },
-                ),
+              padding: EdgeInsets.only(top: 50),
+              child: Column(
+                children: [
+                  Text(
+                    "Traditional Dishes",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    width: 500,
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: users.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final user = users.values.elementAt(index);
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: listItem(user: user),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             );
+
           } else {
             return Text("Data is null");
           }

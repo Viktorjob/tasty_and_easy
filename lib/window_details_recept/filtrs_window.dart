@@ -1,86 +1,141 @@
 import 'package:flutter/material.dart';
 
 typedef OnFilterChangedCallback = void Function(bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan, bool halal);
-void filtrs_details_window(BuildContext context, bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan, bool halal,  OnFilterChangedCallback onFilterChanged) {
+void filtersDetailsWindow(BuildContext context, bool glutenFree, bool lactoseFree, bool vegetarian, bool vegan, bool halal,  OnFilterChangedCallback onFilterChanged) {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          return AlertDialog(
-            title: Text('Filters'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SwitchListTile(
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Filters',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  title: Text('Gluten free'),
+                  subtitle: Text('Only include gluten-free meals.'),
+                  trailing: Switch(
                     value: glutenFree,
                     onChanged: (isChecked) {
                       setState(() {
                         glutenFree = isChecked;
                       });
                     },
-                    title: Text('Gluten free'),
                   ),
-                  SwitchListTile(
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  title: Text('Lactose free'),
+                  subtitle: Text('Only include lactose-free meals.'),
+                  trailing: Switch(
                     value: lactoseFree,
                     onChanged: (isChecked) {
                       setState(() {
                         lactoseFree = isChecked;
                       });
                     },
-                    title: Text('Lactose free'),
                   ),
-                  SwitchListTile(
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  title: Text('Vegetarian dishes'),
+                  subtitle: Text('Only include vegetarian meals.'),
+                  trailing: Switch(
                     value: vegetarian,
                     onChanged: (isChecked) {
                       setState(() {
                         vegetarian = isChecked;
                       });
                     },
-                    title: Text('Vegetarian dishes'),
                   ),
-                  SwitchListTile(
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  title: Text('Vegan dishes'),
+                  subtitle: Text('Only include vegan meals.'),
+                  trailing: Switch(
                     value: vegan,
                     onChanged: (isChecked) {
                       setState(() {
                         vegan = isChecked;
                       });
                     },
-                    title: Text('Vegan dishes'),
                   ),
-                  SwitchListTile(
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                  title: Text('Halal dishes'),
+                  subtitle: Text('Only include halal meals.'),
+                  trailing: Switch(
                     value: halal,
                     onChanged: (isChecked) {
                       setState(() {
                         halal = isChecked;
                       });
                     },
-                    title: Text('Halal dishes'),
                   ),
+                ),
+                ButtonBar(
+                  alignment: MainAxisAlignment.spaceAround, // Распределение кнопок по ширине окна
+                  layoutBehavior: ButtonBarLayoutBehavior.padded,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        onFilterChanged(glutenFree, lactoseFree, vegetarian, vegan, halal);
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.lightGreen,
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0), // Отступы кнопки
+                      ),
+                      child: Text(
+                        'Apply',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.lightGreen,
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0), // Отступы кнопки
+                      ),
+                      child: Text(
+                        'Close',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 
-
-                ],
-              ),
+              ],
             ),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  onFilterChanged(glutenFree, lactoseFree, vegetarian, vegan, halal );
-                },
-                child: Text('Apply'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Close'),
-              ),
-            ],
           );
         },
       );
     },
   );
 }
-

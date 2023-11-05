@@ -41,7 +41,7 @@ class _ListDishesState extends State<ListDishes> {
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
-              filtrs_details_window(
+              filtersDetailsWindow(
                 context,
                 glutenFree,
                 lactoseFree,

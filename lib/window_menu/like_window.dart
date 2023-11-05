@@ -5,7 +5,6 @@ import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 import 'package:tasty_and_easy/window_menu/home_window.dart';
 import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 class LikeWindow extends StatefulWidget {
   const LikeWindow({Key? key}) : super(key: key);
 
@@ -22,14 +21,14 @@ class _LikeWindowState extends State<LikeWindow> {
     return Scaffold(
       drawer: SecondMenuDrawer(),
       appBar: AppBar(
-        title: Text("Main page3"),
+        title: Text("Favorite dishes"),
         backgroundColor: Colors.lightGreen,
       ),
       body: StreamBuilder(
         stream: dbRef.onValue,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
@@ -42,14 +41,11 @@ class _LikeWindowState extends State<LikeWindow> {
               itemBuilder: (BuildContext context, int index) {
                 final key = users.keys.elementAt(index);
                 final user = users.values.elementAt(index);
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: listItem(user: user, itemKey: key),
-                );
+                return listItem(user: user, itemKey: key);
               },
             );
           } else {
-            return Text("Data is null");
+            return Center(child: Text("You haven't added your favorite dish yet"));
           }
         },
       ),
@@ -77,28 +73,17 @@ class _LikeWindowState extends State<LikeWindow> {
     return InkWell(
       onTap: () {
         likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
-        print('Tapped on $category');
         if (category != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => Page_recept(dishName: category),
             ),
           );
-
         }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(2, 2),
-              blurRadius: 10,
-            ),
-          ],
-        ),
+      child: Card(
+        elevation: 4, // Добавляем тень карточке.
+        margin: EdgeInsets.all(8),
         child: Row(
           children: [
             Container(
