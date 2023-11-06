@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,10 +52,21 @@ class _Page_receptState extends State<Page_recept> {
         'image_url': data!['image_url'],
       });
     } else {
-      // Удалите блюдо из списка Like_list (если необходимо)
-      // Например, вы можете использовать уникальный ключ для удаления элемента.
+      // Удалите блюдо из списка Like_list, если оно было удалено из избранных
+      likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
+        final snapshot = event.snapshot;
+        Map<dynamic, dynamic>? values = snapshot.value as Map?;
+        if (values != null) {
+          values.forEach((key, value) {
+            likeListRef.child(key).remove();
+          });
+        }
+      });
+
+
     }
   }
+
 
   Widget _buildIngredientRow(Map<String, dynamic> data, String ingredientKey, String quantityKey) {
     if (data[ingredientKey] != null && data[quantityKey] != null) {
