@@ -14,6 +14,7 @@ class Accountwindow extends StatefulWidget {
 
 class _AccountScreenState extends State<Accountwindow> {
   final user = FirebaseAuth.instance.currentUser;
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
 
   Future<void> signOut() async {
     final navigator = Navigator.of(context);
@@ -34,6 +35,7 @@ class _AccountScreenState extends State<Accountwindow> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Ваш Email: ${user?.email}'),
+            Text('Ваш uid: ${uid}'),
             if (user == null)
               TextButton(
                 onPressed: () {

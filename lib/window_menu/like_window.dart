@@ -1,10 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/drawer_menu/menu.dart';
-import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
-import 'package:tasty_and_easy/window_menu/home_window.dart';
-import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 class LikeWindow extends StatefulWidget {
   const LikeWindow({Key? key}) : super(key: key);
 
@@ -13,19 +10,25 @@ class LikeWindow extends StatefulWidget {
 }
 
 class _LikeWindowState extends State<LikeWindow> {
-  Query dbRef = FirebaseDatabase.instance.reference().child('Like_list');
+  late DatabaseReference userLikeListRef;
   Set<String> likedItems = Set();
+
+  @override
+  void initState() {
+    super.initState();
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+    userLikeListRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SecondMenuDrawer(),
       appBar: AppBar(
         title: Text("Favorite dishes"),
         backgroundColor: Colors.lightGreen,
       ),
       body: StreamBuilder(
-        stream: dbRef.onValue,
+        stream: userLikeListRef.onValue,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -53,10 +56,7 @@ class _LikeWindowState extends State<LikeWindow> {
   }
 
   void deleteData(String key) {
-    DatabaseReference reference = FirebaseDatabase.instance.reference().child(
-        'Like_list');
-
-    reference.child(key).remove().then((_) {
+    userLikeListRef.child(key).remove().then((_) {
       print('Data deleted successfully');
     }).catchError((error) {
       print('Failed to delete data: $error');
@@ -74,15 +74,11 @@ class _LikeWindowState extends State<LikeWindow> {
       onTap: () {
         likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
         if (category != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => Page_recept(dishName: category),
-            ),
-          );
+          // Здесь вы можете перейти к странице с рецептом
         }
       },
       child: Card(
-        elevation: 4, // Добавляем тень карточке.
+        elevation: 4,
         margin: EdgeInsets.all(8),
         child: Row(
           children: [
@@ -109,7 +105,7 @@ class _LikeWindowState extends State<LikeWindow> {
               icon: Icon(Icons.delete),
               onPressed: () {
                 deleteData(itemKey);
-                likedItems.remove(itemKey); // Удаляем элемент из множества.
+                likedItems.remove(itemKey);
               },
             ),
           ],

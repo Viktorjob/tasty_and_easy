@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,7 @@ class _Page_receptState extends State<Page_recept> {
   Query? dbRef;
   bool isFavorite = false;
   Map<String, dynamic>? data;
-
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
   @override
   void initState() {
     super.initState();
@@ -42,9 +43,9 @@ class _Page_receptState extends State<Page_recept> {
     setState(() {
       isFavorite = !isFavorite;
     });
-    saveIsFavorite(isFavorite); // Сохранение значения в SharedPreferences
+    saveIsFavorite(isFavorite);
 
-    DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('Like_list');
+    DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
 
     if (isFavorite && data != null) {
       likeListRef.push().set({
@@ -62,8 +63,6 @@ class _Page_receptState extends State<Page_recept> {
           });
         }
       });
-
-
     }
   }
 
