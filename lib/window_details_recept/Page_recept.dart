@@ -170,15 +170,23 @@ class _Page_receptState extends State<Page_recept> {
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: toggleFavorite,
-                          child: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red : Colors.grey,
+                          onTap: () {
+                            if (uid != null) {
+                              toggleFavorite();
+                            }
+                          },
+                          child: Opacity(
+                            opacity: uid != null ? 1.0 : 0.3, // Если пользователь не вошел в систему, устанавливаем непрозрачность в 0.3
+                            child: Icon(
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              color: isFavorite ? Colors.red : Colors.grey,
+                            ),
                           ),
                         ),
-                                              ],
+                      ],
                     ),
                   ),
+
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(

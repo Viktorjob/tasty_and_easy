@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 
 class LikeWindow extends StatefulWidget {
   const LikeWindow({Key? key}) : super(key: key);
@@ -16,12 +17,34 @@ class _LikeWindowState extends State<LikeWindow> {
   @override
   void initState() {
     super.initState();
-    String? uid = FirebaseAuth.instance.currentUser?.uid;
-    userLikeListRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      userLikeListRef = FirebaseDatabase.instance.reference().child('users').child(uid).child('Like_list');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Favorite dishes"),
+          backgroundColor: Colors.lightGreen,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("You need to be logged in to view your favorite dishes."),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Favorite dishes"),
@@ -40,6 +63,7 @@ class _LikeWindowState extends State<LikeWindow> {
             );
 
             return ListView.builder(
+              shrinkWrap: true,
               itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
                 final key = users.keys.elementAt(index);
@@ -74,7 +98,11 @@ class _LikeWindowState extends State<LikeWindow> {
       onTap: () {
         likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
         if (category != null) {
-          // Здесь вы можете перейти к странице с рецептом
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => Page_recept(dishName: category),
+            ),
+          );
         }
       },
       child: Card(
