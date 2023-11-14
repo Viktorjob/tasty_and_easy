@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -17,35 +16,74 @@ class Page_recept extends StatefulWidget {
 class _Page_receptState extends State<Page_recept> {
   Query? dbRef;
   bool isFavorite = false;
+  int likesCount = 0;
   Map<String, dynamic>? data;
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   void initState() {
     super.initState();
     dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
     loadIsFavorite();
+    loadLikesCount();
   }
 
   void loadIsFavorite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool favorite = prefs.getBool(widget.dishName) ?? false;
+    bool favorite = prefs.getBool('${widget.dishName}_$uid') ?? false;
     setState(() {
-      isFavorite = favorite;
+      // Используйте data['is_favorite'] или любое другое поле в ваших данных,
+      // которое указывает, добавлено ли блюдо в избранное
+      isFavorite = favorite || (data != null && data!['is_favorite'] == true);
     });
   }
 
-  // Определите метод saveIsFavorite для сохранения состояния в SharedPreferences
+
+  void loadLikesCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    likesCount = prefs.getInt('${widget.dishName}_likes') ?? 0;
+
+    DatabaseReference likesRef =
+    FirebaseDatabase.instance.reference().child('${widget.dishName}/number_of_likes');
+
+    // Добавлен слушатель событий для обновления likesCount при изменении в базе данных
+    likesRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        setState(() {
+          likesCount = (event.snapshot.value as int?) ?? 0;
+        });
+      }
+    });
+  }
+
   void saveIsFavorite(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(widget.dishName, value);
+    prefs.setBool('${widget.dishName}_$uid', value);
   }
+
+  void saveLikesCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('${widget.dishName}_likes', likesCount);
+
+    DatabaseReference likesRef =
+    FirebaseDatabase.instance.reference().child('${widget.dishName}/number_of_likes');
+    likesRef.set(likesCount);
+  }
+
   void toggleFavorite() {
     setState(() {
       isFavorite = !isFavorite;
+      likesCount += isFavorite ? 1 : -1;
+      saveLikesCount();
     });
     saveIsFavorite(isFavorite);
 
-    DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+    DatabaseReference likesRef =
+    FirebaseDatabase.instance.reference().child('${widget.dishName}/number_of_likes');
+    likesRef.set(likesCount);
+
+    DatabaseReference likeListRef =
+    FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
 
     if (isFavorite && data != null) {
       likeListRef.push().set({
@@ -53,7 +91,6 @@ class _Page_receptState extends State<Page_recept> {
         'image_url': data!['image_url'],
       });
     } else {
-      // Удалите блюдо из списка Like_list, если оно было удалено из избранных
       likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
         final snapshot = event.snapshot;
         Map<dynamic, dynamic>? values = snapshot.value as Map?;
@@ -66,7 +103,6 @@ class _Page_receptState extends State<Page_recept> {
     }
   }
 
-
   Widget _buildIngredientRow(Map<String, dynamic> data, String ingredientKey, String quantityKey) {
     if (data[ingredientKey] != null && data[quantityKey] != null) {
       return Padding(
@@ -75,19 +111,16 @@ class _Page_receptState extends State<Page_recept> {
           children: [
             Text(data[ingredientKey]),
             Expanded(
-              child: Divider(), // Используйте Divider внутри Expanded
+              child: Divider(),
             ),
             Text(data[quantityKey]),
           ],
         ),
       );
     } else {
-      return SizedBox.shrink(); // Скрывает виджет, если данные `null`.
+      return SizedBox.shrink();
     }
   }
-
-
-
 
   Widget _buildStep(Map<String, dynamic> data, String stepKey) {
     if (data[stepKey] != null) {
@@ -96,11 +129,9 @@ class _Page_receptState extends State<Page_recept> {
         child: Text(data[stepKey]),
       );
     } else {
-      return SizedBox.shrink(); // Скрывает виджет, если данные `null`.
+      return SizedBox.shrink();
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +141,7 @@ class _Page_receptState extends State<Page_recept> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            saveLikesCount();
             Navigator.of(context).pop();
           },
         ),
@@ -118,7 +150,6 @@ class _Page_receptState extends State<Page_recept> {
       body: StreamBuilder(
         stream: dbRef!.onValue,
         builder: (context, snapshot) {
-
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             data = Map<String, dynamic>.from(
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
@@ -176,17 +207,17 @@ class _Page_receptState extends State<Page_recept> {
                             }
                           },
                           child: Opacity(
-                            opacity: uid != null ? 1.0 : 0.3, // Если пользователь не вошел в систему, устанавливаем непрозрачность в 0.3
+                            opacity: uid != null ? 1.0 : 0.3,
                             child: Icon(
-                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              isFavorite ? Icons.favorite : Icons.favorite_outlined,
                               color: isFavorite ? Colors.red : Colors.grey,
                             ),
                           ),
                         ),
+                        Text('Likes: $likesCount'),
                       ],
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
