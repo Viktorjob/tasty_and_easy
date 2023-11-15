@@ -6,8 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Page_recept extends StatefulWidget {
   final String dishName;
+  final String SSS;
 
-  const Page_recept({Key? key, required this.dishName}) : super(key: key);
+  const Page_recept({Key? key, required this.dishName, required this.SSS}) : super(key: key);
 
   @override
   _Page_receptState createState() => _Page_receptState();
@@ -23,6 +24,7 @@ class _Page_receptState extends State<Page_recept> {
   @override
   void initState() {
     super.initState();
+    print('SSS value in initState: ${widget.SSS}');
     dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
     loadIsFavorite();
     loadLikesCount();
@@ -44,7 +46,7 @@ class _Page_receptState extends State<Page_recept> {
     likesCount = prefs.getInt('${widget.dishName}_likes') ?? 0;
 
     DatabaseReference likesRef =
-    FirebaseDatabase.instance.reference().child('${widget.dishName}/number_of_likes');
+    FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
 
     // Добавлен слушатель событий для обновления likesCount при изменении в базе данных
     likesRef.onValue.listen((event) {
@@ -66,7 +68,7 @@ class _Page_receptState extends State<Page_recept> {
     prefs.setInt('${widget.dishName}_likes', likesCount);
 
     DatabaseReference likesRef =
-    FirebaseDatabase.instance.reference().child('${widget.dishName}/number_of_likes');
+    FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
     likesRef.set(likesCount);
   }
 
@@ -79,7 +81,7 @@ class _Page_receptState extends State<Page_recept> {
     saveIsFavorite(isFavorite);
 
     DatabaseReference likesRef =
-    FirebaseDatabase.instance.reference().child('${widget.dishName}/number_of_likes');
+    FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
     likesRef.set(likesCount);
 
     DatabaseReference likeListRef =
@@ -104,6 +106,7 @@ class _Page_receptState extends State<Page_recept> {
   }
 
   Widget _buildIngredientRow(Map<String, dynamic> data, String ingredientKey, String quantityKey) {
+
     if (data[ingredientKey] != null && data[quantityKey] != null) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -135,6 +138,7 @@ class _Page_receptState extends State<Page_recept> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightGreen,

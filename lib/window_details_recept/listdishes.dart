@@ -22,9 +22,10 @@ class _ListDishesState extends State<ListDishes> {
   bool vegetarian = false;
   bool vegan = false;
   bool halal = false;
-
-  _ListDishesState(this.dishKey);
-
+  String SSS = '';
+  _ListDishesState(this.dishKey) {
+    SSS = dishKey; // Присвойте значение dishKey переменной SSS
+  }
   @override
   void initState() {
     super.initState();
@@ -95,6 +96,7 @@ class _ListDishesState extends State<ListDishes> {
                   padding: const EdgeInsets.all(8.0),
                   child: ListItem(
                     user1: user1,
+                    SSS: SSS,
                   ),
                 );
               },
@@ -107,10 +109,11 @@ class _ListDishesState extends State<ListDishes> {
     );
   }
 }
+
 class ListItem extends StatelessWidget {
   final Map user1;
-
-  ListItem({required this.user1});
+  final String SSS;
+  ListItem({required this.user1,required this.SSS});
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +121,7 @@ class ListItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => Page_recept(dishName: user1['name']),
+            builder: (context) => Page_recept(dishName: user1['name'], SSS: SSS),
           ),
         );
       },

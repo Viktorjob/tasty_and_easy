@@ -100,7 +100,7 @@ class _LikeWindowState extends State<LikeWindow> {
         if (category != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => Page_recept(dishName: category),
+              builder: (context) => Page_recept(dishName: category, SSS: '',),
             ),
           );
         }
