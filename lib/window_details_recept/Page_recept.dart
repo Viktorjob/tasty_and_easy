@@ -237,6 +237,11 @@ class _Page_receptState extends State<Page_recept> {
                   _buildIngredientRow(data!, 'ingredient_6', 'quantity_6'),
                   _buildIngredientRow(data!, 'ingredient_7', 'quantity_7'),
                   _buildIngredientRow(data!, 'ingredient_8', 'quantity_8'),
+                  _buildIngredientRow(data!, 'ingredient_9', 'quantity_9'),
+                  _buildIngredientRow(data!, 'ingredient_10', 'quantity_10'),
+                  _buildIngredientRow(data!, 'ingredient_11', 'quantity_11'),
+                  _buildIngredientRow(data!, 'ingredient_12', 'quantity_12'),
+                  _buildIngredientRow(data!, 'ingredient_13', 'quantity_13'),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
@@ -256,6 +261,11 @@ class _Page_receptState extends State<Page_recept> {
                   _buildStep(data!, '6_step'),
                   _buildStep(data!, '7_step'),
                   _buildStep(data!, '8_step'),
+                  _buildStep(data!, '9_step'),
+                  _buildStep(data!, '10_step'),
+                  _buildStep(data!, '11_step'),
+                  _buildStep(data!, '12_step'),
+                  _buildStep(data!, '13_step'),
                 ],
               ),
             );

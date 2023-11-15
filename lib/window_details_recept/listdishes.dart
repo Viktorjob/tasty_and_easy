@@ -4,6 +4,7 @@ import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 import 'package:tasty_and_easy/window_details_recept/filtrs_window.dart';
 import 'package:tasty_and_easy/window_menu/home_window.dart';
 
+
 class ListDishes extends StatefulWidget {
   final String dishKey;
 
@@ -35,7 +36,6 @@ class _ListDishesState extends State<ListDishes> {
     return Scaffold(
       appBar: AppBar(
         title: Text(dishKey),
-
         backgroundColor: Colors.lightGreen,
         actions: <Widget>[
           IconButton(
@@ -58,7 +58,6 @@ class _ListDishesState extends State<ListDishes> {
                   });
                 },
               );
-
             },
           ),
         ],
@@ -82,13 +81,12 @@ class _ListDishesState extends State<ListDishes> {
                   (!halal || dish['Halal'] == halal);
             }).toList();
 
-
-
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 1,
                 crossAxisSpacing: 0.0,
                 mainAxisSpacing: 0.0,
+                childAspectRatio: 5 / 3, // You can adjust this ratio as needed
               ),
               itemCount: filteredDishes.length,
               itemBuilder: (BuildContext context, int index) {
@@ -109,7 +107,6 @@ class _ListDishesState extends State<ListDishes> {
     );
   }
 }
-
 class ListItem extends StatelessWidget {
   final Map user1;
 
@@ -117,7 +114,6 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -126,43 +122,74 @@ class ListItem extends StatelessWidget {
           ),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(2, 2),
-              blurRadius: 10,
-            ),
-          ],
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                user1['image_url'].toString(),
-                fit: BoxFit.cover,
-              ),
-              Container(
-                color: Colors.black.withOpacity(0.6),
-                child: Center(
-                  child: Text(
-                    user1['name'] != null ? user1['name'] : '',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+          borderRadius: BorderRadius.circular(20), // Задаем общий радиус для всех углов
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  offset: Offset(2, 2),
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
+                  user1['image_url'].toString(),
+                  fit: BoxFit.cover,
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.black.withOpacity(0.6),
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user1['name'] != null ? user1['name'] : '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                       /* Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Likes: ${user1['likesCount']}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              'Time: ${user1['time']}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),*/
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+
