@@ -6,7 +6,7 @@ class Filters extends StatelessWidget {
     return Scaffold(
       appBar: AppBar( // Вернуть AppBar
         title: Text("Filters"),
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Color(0xFFECAD16FF),
       ),
       body: Center(
         child: Text(

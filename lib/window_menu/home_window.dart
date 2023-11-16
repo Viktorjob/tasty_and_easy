@@ -11,8 +11,11 @@ class home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       drawer: SecondMenuDrawer(),
+
       body: BottomNavigationBarExample(),
+
     );
   }
 }
@@ -46,6 +49,7 @@ class _BottomNavigationBarExampleState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -79,7 +83,8 @@ class _BottomNavigationBarExampleState
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? Colors.lightGreen : Colors.transparent,
+          color: isSelected ? Color(0xFFF2A40E) : Colors.transparent,
+
         ),
         child: Icon(
           icon,

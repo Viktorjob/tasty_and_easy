@@ -19,14 +19,15 @@ class _FirstPageState extends State<FirstPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: SecondMenuDrawer(),
+
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only( left: 65.0),
           child: Text("Tasty of easy"),
         ),
-        backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
+        backgroundColor: Color(0xFFF2A40E) , // Здесь установите желаемый цвет для AppBar
       ),
-
+      backgroundColor: Color(0xFF0B0E12),
 
       body: StreamBuilder(
         stream: dbRef.onValue,
@@ -49,7 +50,7 @@ class _FirstPageState extends State<FirstPage> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
                   Container(

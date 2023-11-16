@@ -6,7 +6,7 @@ class country_dish extends StatelessWidget {
     return Scaffold(
       appBar: AppBar( // Вернуть AppBar
         title: Text("Hello"),
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Color(0xFFECAD16FF),
       ),
       body: Center(
         child: Text(

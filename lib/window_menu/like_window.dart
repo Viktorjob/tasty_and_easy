@@ -32,7 +32,7 @@ class _LikeWindowState extends State<LikeWindow> {
       return Scaffold(
         appBar: AppBar(
           title: Text("Favorite dishes"),
-          backgroundColor: Colors.lightGreen,
+
         ),
         body: Center(
           child: Column(

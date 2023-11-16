@@ -163,25 +163,43 @@ class ListItem extends StatelessWidget {
                             fontSize: 18,
                           ),
                         ),
-                       /* Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'Likes: ${user1['likesCount']}',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              'Time: ${user1['time']}',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.favorite, // Иконка сердца
+                                  color: Colors.white,
+                                  size: 15,
+                                ),
+                                SizedBox(width: 10), // Расстояние между иконкой и текстом
+                                Text(
+                                  '${user1['number_of_likes']}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  Icons.access_time, // Иконка сердца
+                                  color: Colors.white,
+                                  size: 15,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '${user1['time']}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
-                        ),*/
+                        ),
+
                       ],
                     ),
                   ),
