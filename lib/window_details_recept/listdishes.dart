@@ -169,7 +169,7 @@ class ListItem extends StatelessWidget {
                             Row(
                               children: [
                                 Icon(
-                                  Icons.favorite, // Иконка сердца
+                                  Icons.bookmark_border, // Иконка сердца
                                   color: Colors.white,
                                   size: 15,
                                 ),

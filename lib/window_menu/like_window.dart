@@ -119,6 +119,8 @@ class _LikeWindowState extends State<LikeWindow> {
           alignment: Alignment.bottomCenter,
           children: [
             Container(
+              height: 200,
+              width: 220,
               padding: EdgeInsets.only(bottom: 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20.0),
@@ -128,20 +130,41 @@ class _LikeWindowState extends State<LikeWindow> {
                   width: 2.0,
                 ),
               ),
-              child: Image.network(
-                user['image_url'].toString(),
-                fit: BoxFit.cover,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Image.network(
+                  user['image_url'].toString(),
+                  fit: BoxFit.cover,
+                ),
               ),
             ), // Image with dark overlay
             // Dark overlay at the bottom
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  dishName ?? '',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Colors.transparent, Colors.black],
+                          //stops: [0.1, 50],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Text(
+                          dishName ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Container(
@@ -167,12 +190,8 @@ class _LikeWindowState extends State<LikeWindow> {
                           child: Container(
                             width: 40,
                             height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.amber,
-                            ),
                             child: Icon(
-                              Icons.delete,
+                              Icons.bookmark_border,
                               color: Colors.white,
                             ),
                           ),
