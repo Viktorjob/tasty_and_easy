@@ -20,9 +20,11 @@ class _LikeWindowState extends State<LikeWindow> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       String uid = user.uid;
-      userLikeListRef =
-          FirebaseDatabase.instance.reference().child('users').child(uid).child(
-              'Like_list');
+      userLikeListRef = FirebaseDatabase.instance
+          .reference()
+          .child('users')
+          .child(uid)
+          .child('Like_list');
     }
   }
 
@@ -68,8 +70,8 @@ class _LikeWindowState extends State<LikeWindow> {
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 20.0,
               ),
               itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
@@ -94,96 +96,95 @@ class _LikeWindowState extends State<LikeWindow> {
       print('Failed to delete data: $error');
     });
   }
+
   Widget listItem({required Map user, required String itemKey}) {
-    String? category = user['name'];
+    String? dishName = user['name'];
 
     if (likedItems.contains(itemKey)) {
-      return Container(); // Элемент уже добавлен, не отображаем его.
+      return Container(); // Element is already added, don't display it.
     }
 
     return InkWell(
-      onTap: () {
-        likedItems.add(itemKey);
-        if (category != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => Page_recept(dishName: category, SSS: ''),
-            ),
-          );
-        }
-      },
-      child: Container(
-        margin: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Color(0xFF0B0E12),
-          border: Border.all(
-            color: Colors.amber,
-            width: 2.0,
-          ),
-        ),
-        child: ClipRRect( // Обернуть весь Container в ClipRRect
-          borderRadius: BorderRadius.circular(20.0),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
+        onTap: () {
+          likedItems.add(itemKey);
+          if (dishName != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Page_recept(dishName: dishName, SSS: ''),
+              ),
+            );
+          }
+        },
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              padding: EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Color(0xFF0B0E12),
+                border: Border.all(
+                  color: Colors.amber,
+                  width: 2.0,
+                ),
+              ),
+              child: Image.network(
                 user['image_url'].toString(),
                 fit: BoxFit.cover,
               ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
+            ), // Image with dark overlay
+            // Dark overlay at the bottom
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  dishName ?? '',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  height: 30.0,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Colors.black, Colors.transparent],
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Color(0xFF0B0E12),
+                    border: Border.all(
+                      color: Colors.amber,
+                      width: 2.0,
                     ),
                   ),
-                  padding: EdgeInsets.all(8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(
-                        child: Text(
-                          user['name'],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                       GestureDetector(
                         onTap: () {
                           deleteData(itemKey);
                           likedItems.remove(itemKey);
                         },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.amber,
-                          ),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.amber,
+                            ),
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+              ],
+            ),
+          ],
+        ) // Container for the image
+        );
   }
-
-
 }
