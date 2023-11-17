@@ -1,4 +1,4 @@
-import 'package:tasty_and_easy/drawer_menu/menu.dart';
+
 import 'package:tasty_and_easy/window_login/login_window.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +27,6 @@ class _AccountScreenState extends State<Accountwindow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SecondMenuDrawer(),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: Center(

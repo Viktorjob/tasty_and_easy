@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/drawer_menu/menu.dart';
+
 import 'package:tasty_and_easy/window_menu/FirstPage.dart';
 import 'package:tasty_and_easy/window_menu/account_window.dart';
 import 'package:tasty_and_easy/window_menu/like_window.dart';
@@ -11,15 +11,12 @@ class home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      drawer: SecondMenuDrawer(),
-
       body: BottomNavigationBarExample(),
 
     );
   }
 }
-
+// ...
 
 class BottomNavigationBarExample extends StatefulWidget {
   const BottomNavigationBarExample({Key? key});
@@ -49,27 +46,35 @@ class _BottomNavigationBarExampleState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFA4A4A4), // Фон для нижней навигационной панели
-          border: Border(
-            top: BorderSide(color: Color(0xFFA4A4A4), width: 8.0),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 3, // Высота полоски
+            color: Colors.amber, // Цвет полоски
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            buildNavigationBarItem(Icons.home, 0),
-            buildNavigationBarItem(Icons.list, 1),
-            buildNavigationBarItem(Icons.favorite, 2),
-            buildNavigationBarItem(Icons.account_circle, 3),
-          ],
-        ),
-        padding: EdgeInsets.only(bottom: 8.0),
+          Container(
+            decoration: BoxDecoration(
+              color: Color(0xFF0B0E12), // Фон для нижней навигационной панели
+              border: Border(
+                top: BorderSide(color: Color(0xFF0B0E12), width: 8.0),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                buildNavigationBarItem(Icons.home, 0),
+                buildNavigationBarItem(Icons.list, 1),
+                buildNavigationBarItem(Icons.bookmark_border, 2),
+                buildNavigationBarItem(Icons.account_circle, 3),
+              ],
+            ),
+            padding: EdgeInsets.only(bottom: 8.0),
+          ),
+        ],
       ),
     );
   }
@@ -83,14 +88,14 @@ class _BottomNavigationBarExampleState
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? Color(0xFFF2A40E) : Colors.transparent,
-
+          color: isSelected ?   Colors.amber : Colors.transparent,
         ),
         child: Icon(
           icon,
-          color: isSelected ? Colors.white : Colors.white, // Изменение цвета иконки для активной и неактивной кнопки
+          color: isSelected ? Colors.white : Colors.white,
         ),
       ),
     );
   }
 }
+

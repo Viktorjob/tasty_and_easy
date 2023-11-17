@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/country_dishes/dishes.dart';
-import 'package:tasty_and_easy/drawer_menu/menu.dart';
-import 'package:tasty_and_easy/window_menu/home_window.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({Key? key}) : super(key: key);
@@ -13,70 +11,110 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  ScrollController _scrollController = ScrollController();
   Query dbRef = FirebaseDatabase.instance.reference().child('Country');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SecondMenuDrawer(),
-
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only( left: 65.0),
-          child: Text("Tasty of easy"),
-        ),
-        backgroundColor: Color(0xFFF2A40E) , // Здесь установите желаемый цвет для AppBar
-      ),
-      backgroundColor: Color(0xFF0B0E12),
-
-      body: StreamBuilder(
-        stream: dbRef.onValue,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          }
-
-          if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
-            Map<String, dynamic> users = Map<String, dynamic>.from(
-              (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
-            );
-
-            return Padding(
-              padding: EdgeInsets.only(top: 50),
-              child: Column(
-                children: [
-                  Text(
-                    "Traditional Dishes",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+        backgroundColor: Color(0xFF0B0E12),
+    body: Container(
+    decoration: BoxDecoration(
+    /*image: DecorationImage(
+    image: AssetImage('assets/ttt.jpg'), // Укажите путь к вашей картинке
+    fit: BoxFit.cover,
+    ),*/
+    ),child: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: 200.0,
+              floating: false,
+              pinned: true,
+              backgroundColor: Colors.transparent,
+              // Set background color to transparent
+              elevation: 0,
+              // Remove shadow
+              flexibleSpace: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return FlexibleSpaceBar(
+                    background: Image.asset(
+                      'assets/appbar_new.jpg',
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                  Container(
-                    width: 500,
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: users.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final user = users.values.elementAt(index);
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: listItem(user: user),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-
-          } else {
-            return Text("Data is null");
-          }
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                height: 2, // Adjust the height of the golden line
+                color: Colors.amber, // Set the color to golden
+              ),
+            ),
+          ];
         },
-      ),
+        body: StreamBuilder(
+          stream: dbRef.onValue,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
+
+            if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+              Map<String, dynamic> users = Map<String, dynamic>.from(
+                (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
+              );
+
+              return Padding(
+                padding: EdgeInsets.only(top: 50),
+                child: Column(
+                  children: [
+                    Text(
+                      "Traditional Dishes",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      width: 500,
+                      height: 200,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: users.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final user = users.values.elementAt(index);
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: listItem(user: user),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              return Text("Data is null");
+            }
+          },
+        ),
+    ),
+    ),
     );
   }
 
@@ -92,8 +130,12 @@ class _FirstPageState extends State<FirstPage> {
       child: Container(
         width: 200,
         decoration: BoxDecoration(
-          color: Colors.white,
+          border: Border.all(
+            color: Colors.amber, // Задайте цвет золотой линии
+            width: 2.0, // Задайте толщину золотой линии
+          ),
           borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
           boxShadow: const [
             BoxShadow(
               color: Colors.black26,
@@ -113,16 +155,7 @@ class _FirstPageState extends State<FirstPage> {
               ),
               Container(
                 height: 10,
-                color: Colors.black.withOpacity(0.6),
-                child: Center(
-                  child: Text(
-                    user['name'],
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                color: Colors.black.withOpacity(0.2),
               ),
             ],
           ),

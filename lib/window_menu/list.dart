@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/drawer_menu/menu.dart';
+
 import 'package:tasty_and_easy/window_menu/home_window.dart';
 import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 
@@ -16,13 +16,14 @@ class _RecipeListState extends State<RecipeList> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      drawer: SecondMenuDrawer(),
       appBar: AppBar(
-        title: Text("Category"),
-        backgroundColor: Colors.lightGreen , // Здесь установите желаемый цвет для AppBar
+        backgroundColor: Color(0xFF0B0E12) , // Здесь установите желаемый цвет для AppBar
       ),
+      backgroundColor: Color(0xFF0B0E12),
       body: StreamBuilder(
+
         stream: dbRef.onValue,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -33,14 +34,6 @@ class _RecipeListState extends State<RecipeList> {
             Map<String, dynamic> users = Map<String, dynamic>.from(
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
-
-           /* users.forEach((key, value) {
-              print("----------------------");
-              print('Category: $key');
-              value.forEach((categoryKey, categoryValue) {
-                print('  $categoryKey: $categoryValue');
-              });
-            });*/
 
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -66,6 +59,7 @@ class _RecipeListState extends State<RecipeList> {
   }
 
   Widget listItem({required Map user}) {
+
     String? category = user['name'];
     return InkWell(
       onTap: () {
@@ -81,6 +75,10 @@ class _RecipeListState extends State<RecipeList> {
 
       child: Container(
         decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.amber, // Задайте цвет золотой линии
+            width: 2.0, // Задайте толщину золотой линии
+          ),
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: const [

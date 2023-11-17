@@ -20,7 +20,9 @@ class _LikeWindowState extends State<LikeWindow> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       String uid = user.uid;
-      userLikeListRef = FirebaseDatabase.instance.reference().child('users').child(uid).child('Like_list');
+      userLikeListRef =
+          FirebaseDatabase.instance.reference().child('users').child(uid).child(
+              'Like_list');
     }
   }
 
@@ -31,9 +33,9 @@ class _LikeWindowState extends State<LikeWindow> {
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Favorite dishes"),
-
+          title: Text("Save recipes"),
         ),
+        backgroundColor: Color(0xFF0B0E12),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -48,8 +50,9 @@ class _LikeWindowState extends State<LikeWindow> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Favorite dishes"),
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Color(0xFF0B0E12),
       ),
+      backgroundColor: Color(0xFF0B0E12),
       body: StreamBuilder(
         stream: userLikeListRef.onValue,
         builder: (context, snapshot) {
@@ -62,8 +65,12 @@ class _LikeWindowState extends State<LikeWindow> {
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
 
-            return ListView.builder(
-              shrinkWrap: true,
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
               itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
                 final key = users.keys.elementAt(index);
@@ -72,7 +79,8 @@ class _LikeWindowState extends State<LikeWindow> {
               },
             );
           } else {
-            return Center(child: Text("You haven't added your favorite dish yet"));
+            return Center(
+                child: Text("You haven't added your favorite dish yet"));
           }
         },
       ),
@@ -86,7 +94,6 @@ class _LikeWindowState extends State<LikeWindow> {
       print('Failed to delete data: $error');
     });
   }
-
   Widget listItem({required Map user, required String itemKey}) {
     String? category = user['name'];
 
@@ -96,49 +103,87 @@ class _LikeWindowState extends State<LikeWindow> {
 
     return InkWell(
       onTap: () {
-        likedItems.add(itemKey); // Добавляем элемент в множество при нажатии.
+        likedItems.add(itemKey);
         if (category != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => Page_recept(dishName: category, SSS: '',),
+              builder: (context) => Page_recept(dishName: category, SSS: ''),
             ),
           );
         }
       },
-      child: Card(
-        elevation: 4,
+      child: Container(
         margin: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Container(
-              width: 100,
-              child: Image.network(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Color(0xFF0B0E12),
+          border: Border.all(
+            color: Colors.amber,
+            width: 2.0,
+          ),
+        ),
+        child: ClipRRect( // Обернуть весь Container в ClipRRect
+          borderRadius: BorderRadius.circular(20.0),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
                 user['image_url'].toString(),
                 fit: BoxFit.cover,
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  user['name'],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [Colors.black, Colors.transparent],
+                    ),
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          user['name'],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          deleteData(itemKey);
+                          likedItems.remove(itemKey);
+                        },
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.amber,
+                          ),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                deleteData(itemKey);
-                likedItems.remove(itemKey);
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+
 }
