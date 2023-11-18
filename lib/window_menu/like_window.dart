@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 
 class LikeWindow extends StatefulWidget {
+
   const LikeWindow({Key? key}) : super(key: key);
 
   @override
@@ -97,8 +98,10 @@ class _LikeWindowState extends State<LikeWindow> {
     });
   }
 
+
   Widget listItem({required Map user, required String itemKey}) {
     String? dishName = user['name'];
+    String? dishtime = user['time'];
 
     if (likedItems.contains(itemKey)) {
       return Container(); // Element is already added, don't display it.
@@ -107,12 +110,17 @@ class _LikeWindowState extends State<LikeWindow> {
     return InkWell(
         onTap: () {
           likedItems.add(itemKey);
-          if (dishName != null) {
+          if (dishName != null || dishtime != null) {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => Page_recept(dishName: dishName, SSS: ''),
+                builder: (context) => Page_recept(
+                  dishName: dishName ?? '',
+                  dishtime: dishtime ?? '',
+                  SSS: '',
+                ),
               ),
             );
+
           }
         },
         child: Stack(
@@ -180,6 +188,16 @@ class _LikeWindowState extends State<LikeWindow> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      Expanded(
+                        child: Text(
+                          dishtime ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
                       GestureDetector(
                         onTap: () {
                           deleteData(itemKey);
@@ -198,7 +216,8 @@ class _LikeWindowState extends State<LikeWindow> {
                         ),
                       ),
                     ],
-                  ),
+                  )
+
                 ),
               ],
             ),

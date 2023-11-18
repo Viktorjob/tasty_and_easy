@@ -113,6 +113,7 @@ class _ListDishesState extends State<ListDishes> {
 class ListItem extends StatelessWidget {
   final Map user1;
   final String SSS;
+
   ListItem({required this.user1,required this.SSS});
 
   @override
@@ -121,7 +122,7 @@ class ListItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => Page_recept(dishName: user1['name'], SSS: SSS),
+            builder: (context) => Page_recept(dishName: user1['name'],dishtime: user1['time'], SSS: SSS ),
           ),
         );
       },

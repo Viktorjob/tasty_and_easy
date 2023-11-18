@@ -8,7 +8,8 @@ class Page_recept extends StatefulWidget {
   final String dishName;
   final String SSS;
 
-  const Page_recept({Key? key, required this.dishName, required this.SSS}) : super(key: key);
+
+  const Page_recept({Key? key, required this.dishName,required this.SSS, required dishtime}) : super(key: key);
 
   @override
   _Page_receptState createState() => _Page_receptState();
@@ -91,6 +92,7 @@ class _Page_receptState extends State<Page_recept> {
       likeListRef.push().set({
         'name': widget.dishName,
         'image_url': data!['image_url'],
+        'time' : data!['time'],
       });
     } else {
       likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
