@@ -93,6 +93,9 @@ class _LikeWindowState extends State<LikeWindow> {
   void deleteData(String key) {
     userLikeListRef.child(key).remove().then((_) {
       print('Data deleted successfully');
+      setState(() {
+        likedItems.remove(key);
+      });
     }).catchError((error) {
       print('Failed to delete data: $error');
     });
@@ -103,126 +106,128 @@ class _LikeWindowState extends State<LikeWindow> {
     String? dishName = user['name'];
     String? dishtime = user['time'];
 
-    if (likedItems.contains(itemKey)) {
-      return Container(); // Element is already added, don't display it.
-    }
+
+    bool isLiked = likedItems.contains(itemKey);
 
     return InkWell(
-        onTap: () {
-          likedItems.add(itemKey);
-          if (dishName != null || dishtime != null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => Page_recept(
-                  dishName: dishName ?? '',
-                  dishtime: dishtime ?? '',
-                  SSS: '',
-                ),
-              ),
-            );
-
+      onTap: () {
+        setState(() {
+          if (!isLiked) {
+            likedItems.add(itemKey);
           }
-        },
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-              height: 200,
-              width: 220,
-              padding: EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Color(0xFF0B0E12),
-                border: Border.all(
-                  color: Colors.amber,
-                  width: 2.0,
-                ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Image.network(
-                  user['image_url'].toString(),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ), // Image with dark overlay
-            // Dark overlay at the bottom
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 50.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.transparent, Colors.black],
-                          //stops: [0.1, 50],
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0),
-                        child: Text(
-                          dishName ?? '',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 30.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: Color(0xFF0B0E12),
-                    border: Border.all(
-                      color: Colors.amber,
-                      width: 2.0,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          dishtime ?? '',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+        });
 
-                      GestureDetector(
-                        onTap: () {
-                          deleteData(itemKey);
-                          likedItems.remove(itemKey);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 50.0),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            child: Icon(
-                              Icons.bookmark_border,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
+        if (dishName != null || dishtime != null ) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  Page_recept(
+                    dishName: dishName ?? '',
+                    dishtime: dishtime ?? '',
 
-                ),
-              ],
+                    SSS: '',
+                  ),
             ),
-          ],
-        ) // Container for the image
-        );
+          );
+        }
+      },
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Container(
+            height: 200,
+            width: 220,
+            padding: EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Color(0xFF0B0E12),
+              border: Border.all(
+                color: Colors.amber,
+                width: 2.0,
+              ),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+              child: Image.network(
+                user['image_url'].toString(),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ), // Image with dark overlay
+          // Dark overlay at the bottom
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                // Ваш первый контейнер с текстом dishName
+              ),
+              Container(
+                height: 30.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Color(0xFF0B0E12),
+                  border: Border.all(
+                    color: Colors.amber,
+                    width: 2.0,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        dishtime ?? '',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '|',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        user['like'].toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '|',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        deleteData(itemKey);
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.bookmark_border,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+        ],
+      ), // Container for the image
+    );
   }
 }

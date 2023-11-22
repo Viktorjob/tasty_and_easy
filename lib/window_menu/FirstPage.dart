@@ -30,11 +30,8 @@ class _FirstPageState extends State<FirstPage> {
     return Scaffold(
         backgroundColor: Color(0xFF0B0E12),
     body: Container(
+
     decoration: BoxDecoration(
-    /*image: DecorationImage(
-    image: AssetImage('assets/ttt.jpg'), // Укажите путь к вашей картинке
-    fit: BoxFit.cover,
-    ),*/
     ),child: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

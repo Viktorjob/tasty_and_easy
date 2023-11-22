@@ -8,8 +8,7 @@ class Page_recept extends StatefulWidget {
   final String dishName;
   final String SSS;
 
-
-  const Page_recept({Key? key, required this.dishName,required this.SSS, required dishtime}) : super(key: key);
+  const Page_recept({Key? key, required this.dishName, required this.SSS, required String dishtime}) : super(key: key);
 
   @override
   _Page_receptState createState() => _Page_receptState();
@@ -21,11 +20,11 @@ class _Page_receptState extends State<Page_recept> {
   int likesCount = 0;
   Map<String, dynamic>? data;
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+  bool showScrollIcon = true;
 
   @override
   void initState() {
     super.initState();
-    print('SSS value in initState: ${widget.SSS}');
     dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
     loadIsFavorite();
     loadLikesCount();
@@ -35,12 +34,9 @@ class _Page_receptState extends State<Page_recept> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool favorite = prefs.getBool('${widget.dishName}_$uid') ?? false;
     setState(() {
-      // Используйте data['is_favorite'] или любое другое поле в ваших данных,
-      // которое указывает, добавлено ли блюдо в избранное
       isFavorite = favorite || (data != null && data!['is_favorite'] == true);
     });
   }
-
 
   void loadLikesCount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -49,7 +45,6 @@ class _Page_receptState extends State<Page_recept> {
     DatabaseReference likesRef =
     FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
 
-    // Добавлен слушатель событий для обновления likesCount при изменении в базе данных
     likesRef.onValue.listen((event) {
       if (event.snapshot.value != null) {
         setState(() {
@@ -92,7 +87,8 @@ class _Page_receptState extends State<Page_recept> {
       likeListRef.push().set({
         'name': widget.dishName,
         'image_url': data!['image_url'],
-        'time' : data!['time'],
+        'time': data!['time'],
+        'like': likesCount,
       });
     } else {
       likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
@@ -107,31 +103,100 @@ class _Page_receptState extends State<Page_recept> {
     }
   }
 
-  Widget _buildIngredientRow(Map<String, dynamic> data, String ingredientKey, String quantityKey) {
+  Widget _buildIngredientsBlock(Map<String, dynamic> data) {
+    List<Widget> ingredientsWidgets = [];
 
-    if (data[ingredientKey] != null && data[quantityKey] != null) {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Text(data[ingredientKey]),
-            Expanded(
-              child: Divider(),
+    for (int i = 1; i <= 13; i++) {
+      String ingredientKey = 'ingredient_$i';
+      String quantityKey = 'quantity_$i';
+
+      if (data[ingredientKey] != null && data[quantityKey] != null) {
+        ingredientsWidgets.add(
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Text(
+                  data[ingredientKey],
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: Colors.amber,
+                    margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  ),
+                ),
+                Text(
+                  data[quantityKey],
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            Text(data[quantityKey]),
+          ),
+        );
+      }
+    }
+
+    double maxImageHeight = 300; // Измените этот параметр на желаемую высоту
+    double imageBorderRadius = 30.0; // Радиус заокругленных углов картинки
+    double imagePadding = 15.0; // Отступ от краев
+
+    return Padding(
+      padding: EdgeInsets.all(imagePadding),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(imageBorderRadius),
+        child: Stack(
+          children: [
+            Image.network(
+              data!['image_url'].toString(),
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: maxImageHeight,
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withOpacity(0.5),
+                      Colors.black.withOpacity(0.9),
+                    ],
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: ingredientsWidgets,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
-      );
-    } else {
-      return SizedBox.shrink();
-    }
+      ),
+    );
   }
+
+
+
+
+
 
   Widget _buildStep(Map<String, dynamic> data, String stepKey) {
     if (data[stepKey] != null) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(data[stepKey]),
+        child: Text(data[stepKey], style: TextStyle(color: Colors.white)),
       );
     } else {
       return SizedBox.shrink();
@@ -140,8 +205,8 @@ class _Page_receptState extends State<Page_recept> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: Color(0xFF0B0E12),
       appBar: AppBar(
         backgroundColor: Colors.lightGreen,
         leading: IconButton(
@@ -160,7 +225,6 @@ class _Page_receptState extends State<Page_recept> {
             data = Map<String, dynamic>.from(
               (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
             );
-            print('$data');
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,12 +255,12 @@ class _Page_receptState extends State<Page_recept> {
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
                       children: [
-                        Icon(Icons.access_time, color: Colors.black),
+                        Icon(Icons.access_time, color: Colors.white),
                         SizedBox(width: 8),
                         Text(
                           data!['time'],
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -215,12 +279,12 @@ class _Page_receptState extends State<Page_recept> {
                           child: Opacity(
                             opacity: uid != null ? 1.0 : 0.3,
                             child: Icon(
-                              isFavorite ? Icons.bookmark_border : Icons.bookmark_border,
+                              isFavorite ? Icons.favorite_outline : Icons.favorite_outline,
                               color: isFavorite ? Colors.amber : Colors.grey,
                             ),
                           ),
                         ),
-                        Text('Likes: $likesCount'),
+                        Text('Likes: $likesCount', style: TextStyle(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -229,31 +293,19 @@ class _Page_receptState extends State<Page_recept> {
                     child: Text(
                       'Ingredients:',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
                   ),
-                  _buildIngredientRow(data!, 'ingredient_1', 'quantity_1'),
-                  _buildIngredientRow(data!, 'ingredient_2', 'quantity_2'),
-                  _buildIngredientRow(data!, 'ingredient_3', 'quantity_3'),
-                  _buildIngredientRow(data!, 'ingredient_4', 'quantity_4'),
-                  _buildIngredientRow(data!, 'ingredient_5', 'quantity_5'),
-                  _buildIngredientRow(data!, 'ingredient_6', 'quantity_6'),
-                  _buildIngredientRow(data!, 'ingredient_7', 'quantity_7'),
-                  _buildIngredientRow(data!, 'ingredient_8', 'quantity_8'),
-                  _buildIngredientRow(data!, 'ingredient_9', 'quantity_9'),
-                  _buildIngredientRow(data!, 'ingredient_10', 'quantity_10'),
-                  _buildIngredientRow(data!, 'ingredient_11', 'quantity_11'),
-                  _buildIngredientRow(data!, 'ingredient_12', 'quantity_12'),
-                  _buildIngredientRow(data!, 'ingredient_13', 'quantity_13'),
+                  _buildIngredientsBlock(data!),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       'Instructions:',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),

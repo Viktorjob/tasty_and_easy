@@ -23,6 +23,7 @@ class _ListDishesState extends State<ListDishes> {
   bool vegan = false;
   bool halal = false;
   String SSS = '';
+
   _ListDishesState(this.dishKey) {
     SSS = dishKey; // Присвойте значение dishKey переменной SSS
   }
@@ -35,9 +36,11 @@ class _ListDishesState extends State<ListDishes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF0B0E12),
       appBar: AppBar(
         title: Text(dishKey),
-        backgroundColor: Colors.lightGreen,
+
+        backgroundColor: Color(0xFF0B0E12),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.filter_list),
@@ -62,6 +65,7 @@ class _ListDishesState extends State<ListDishes> {
             },
           ),
         ],
+
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
@@ -118,7 +122,9 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
+
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -143,10 +149,29 @@ class ListItem extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(
-                  user1['image_url'].toString(),
-                  fit: BoxFit.cover,
+                Container(
+                  padding: const EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(20), // Закругленные углы
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(2, 2),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20), // Закругленные углы для изображения
+                    child: Image.network(
+                      user1['image_url'].toString(),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
+
+
                 Positioned(
                   bottom: 0,
                   child: Container(
@@ -213,5 +238,3 @@ class ListItem extends StatelessWidget {
     );
   }
 }
-
-
