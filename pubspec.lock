@@ -288,6 +288,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
+  parallax:
+    dependency: "direct main"
+    description:
+      name: parallax
+      sha256: "10ea9ecded06b65cfbeba7796d7ece705a46514a68622ffe7342449395fbaafb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   path:
     dependency: transitive
     description:

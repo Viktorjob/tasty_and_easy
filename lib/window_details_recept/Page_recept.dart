@@ -111,40 +111,13 @@ class _Page_receptState extends State<Page_recept> {
       String quantityKey = 'quantity_$i';
 
       if (data[ingredientKey] != null && data[quantityKey] != null) {
-        ingredientsWidgets.add(
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Text(
-                  data[ingredientKey],
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 1,
-                    color: Colors.amber,
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  ),
-                ),
-                Text(
-                  data[quantityKey],
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+        ingredientsWidgets.add(_buildIngredientRow(data, i));
       }
     }
 
-    double maxImageHeight = 300; // Измените этот параметр на желаемую высоту
-    double imageBorderRadius = 30.0; // Радиус заокругленных углов картинки
-    double imagePadding = 15.0; // Отступ от краев
+    double maxImageHeight = 300;
+    double imageBorderRadius = 30.0;
+    double imagePadding = 15.0;
 
     return Padding(
       padding: EdgeInsets.all(imagePadding),
@@ -158,11 +131,7 @@ class _Page_receptState extends State<Page_recept> {
               width: double.infinity,
               height: maxImageHeight,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
+            Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -176,7 +145,19 @@ class _Page_receptState extends State<Page_recept> {
                 ),
                 child: SingleChildScrollView(
                   child: Column(
-                    children: ingredientsWidgets,
+                    children: [
+                      ...ingredientsWidgets,
+                      if (showScrollIcon && ingredientsWidgets.length > 6)
+                        IconButton(
+                          icon: Icon(Icons.arrow_downward, color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              showScrollIcon = false;
+                            });
+                            // Дополнительные действия при нажатии на иконку
+                          },
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -187,10 +168,37 @@ class _Page_receptState extends State<Page_recept> {
     );
   }
 
+  Widget _buildIngredientRow(Map<String, dynamic> data, int i) {
+    String ingredientKey = 'ingredient_$i';
+    String quantityKey = 'quantity_$i';
 
-
-
-
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Text(
+            data[ingredientKey],
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 1,
+              color: Colors.amber,
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
+            ),
+          ),
+          Text(
+            data[quantityKey],
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildStep(Map<String, dynamic> data, String stepKey) {
     if (data[stepKey] != null) {
@@ -279,7 +287,7 @@ class _Page_receptState extends State<Page_recept> {
                           child: Opacity(
                             opacity: uid != null ? 1.0 : 0.3,
                             child: Icon(
-                              isFavorite ? Icons.favorite_outline : Icons.favorite_outline,
+                              isFavorite ? Icons.favorite : Icons.favorite_outline,
                               color: isFavorite ? Colors.amber : Colors.grey,
                             ),
                           ),
