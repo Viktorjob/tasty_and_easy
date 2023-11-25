@@ -32,3 +32,4 @@ flutter:
   assets:
     - assets/appbar_new.jpg
     - assets/ttt.jpg
+    - assets/swipe.png

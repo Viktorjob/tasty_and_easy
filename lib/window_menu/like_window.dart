@@ -43,7 +43,10 @@ class _LikeWindowState extends State<LikeWindow> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("You need to be logged in to view your favorite dishes."),
+              Text("You need to be logged in to view your favorite dishes.",style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),)
             ],
           ),
         ),
@@ -83,7 +86,10 @@ class _LikeWindowState extends State<LikeWindow> {
             );
           } else {
             return Center(
-                child: Text("You haven't added your favorite dish yet"));
+                child: Text("You haven't added your favorite dish yet" ,style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),));
           }
         },
       ),

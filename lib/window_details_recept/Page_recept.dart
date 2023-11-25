@@ -121,52 +121,81 @@ class _Page_receptState extends State<Page_recept> {
 
     return Padding(
       padding: EdgeInsets.all(imagePadding),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(imageBorderRadius),
-        child: Stack(
-          children: [
-            Image.network(
-              data!['image_url'].toString(),
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: maxImageHeight,
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(imageBorderRadius),
+              border: Border.all(
+                color: Colors.amber, // Цвет линии
+                width: 2.0, // Ширина линии
+              ),
             ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.5),
-                      Colors.black.withOpacity(0.9),
-                    ],
-                  ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(imageBorderRadius),
+              child: Image.network(
+                data!['image_url'].toString(),
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: maxImageHeight,
+              ),
+            ),
+          ),
+
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(imageBorderRadius),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.5),
+                    Colors.black.withOpacity(0.9),
+                  ],
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ...ingredientsWidgets,
-                      if (showScrollIcon && ingredientsWidgets.length > 6)
-                        IconButton(
-                          icon: Icon(Icons.arrow_downward, color: Colors.white),
-                          onPressed: () {
-                            setState(() {
-                              showScrollIcon = false;
-                            });
-                            // Дополнительные действия при нажатии на иконку
-                          },
-                        ),
-                    ],
-                  ),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ...ingredientsWidgets,
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          if (showScrollIcon && ingredientsWidgets.length > 6)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showScrollIcon = false;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(imageBorderRadius),
+                    color: Colors.black.withOpacity(0.5), // Цвет затемненного фона
+                    // Добавьте другие свойства декорации по вашему усмотрению
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/swipe.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+                ),
+
+
+              ),
+            ),
+        ],
       ),
     );
   }
+
+
 
   Widget _buildIngredientRow(Map<String, dynamic> data, int i) {
     String ingredientKey = 'ingredient_$i';
@@ -216,7 +245,7 @@ class _Page_receptState extends State<Page_recept> {
     return Scaffold(
       backgroundColor: Color(0xFF0B0E12),
       appBar: AppBar(
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Colors.amber,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
