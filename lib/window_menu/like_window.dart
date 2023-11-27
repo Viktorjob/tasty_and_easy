@@ -37,6 +37,7 @@ class _LikeWindowState extends State<LikeWindow> {
       return Scaffold(
         appBar: AppBar(
           title: Text("Save recipes"),
+          backgroundColor: Color(0xFF0B0E12),
         ),
         backgroundColor: Color(0xFF0B0E12),
         body: Center(
@@ -130,7 +131,6 @@ class _LikeWindowState extends State<LikeWindow> {
                   Page_recept(
                     dishName: dishName ?? '',
                     dishtime: dishtime ?? '',
-
                     SSS: '',
                   ),
             ),

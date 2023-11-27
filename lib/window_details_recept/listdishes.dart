@@ -4,7 +4,6 @@ import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 import 'package:tasty_and_easy/window_details_recept/filtrs_window.dart';
 import 'package:tasty_and_easy/window_menu/home_window.dart';
 
-
 class ListDishes extends StatefulWidget {
   final String dishKey;
 
@@ -23,10 +22,13 @@ class _ListDishesState extends State<ListDishes> {
   bool vegan = false;
   bool halal = false;
   String SSS = '';
+  bool isSearching = false;
+  TextEditingController searchController = TextEditingController();
 
   _ListDishesState(this.dishKey) {
-    SSS = dishKey; // Присвойте значение dishKey переменной SSS
+    SSS = dishKey;
   }
+
   @override
   void initState() {
     super.initState();
@@ -38,10 +40,32 @@ class _ListDishesState extends State<ListDishes> {
     return Scaffold(
       backgroundColor: Color(0xFF0B0E12),
       appBar: AppBar(
-        title: Text(dishKey),
-
+        title: isSearching
+            ? TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            hintText: 'Search...',
+            hintStyle: TextStyle(color: Colors.white),
+          ),
+          onChanged: (text) {
+            // Handle search text changes
+            setState(() {});
+          },
+        )
+            : Text(dishKey),
         backgroundColor: Color(0xFF0B0E12),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(isSearching ? Icons.cancel : Icons.search),
+            onPressed: () {
+              setState(() {
+                isSearching = !isSearching;
+                if (!isSearching) {
+                  searchController.clear();
+                }
+              });
+            },
+          ),
           IconButton(
             icon: Icon(Icons.filter_list),
             onPressed: () {
@@ -65,7 +89,6 @@ class _ListDishesState extends State<ListDishes> {
             },
           ),
         ],
-
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
@@ -74,16 +97,19 @@ class _ListDishesState extends State<ListDishes> {
             return CircularProgressIndicator();
           }
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
-            Map<String, dynamic> users = Map<String, dynamic>.from(
-              (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
-            );
+            Map<String, dynamic> users =
+            Map<String, dynamic>.from((snapshot.data!.snapshot.value as Map).cast<String, dynamic>());
 
             final filteredDishes = users.values.where((dish) {
+              // Filter based on search text and filters
+              String dishName = dish['name'].toString().toLowerCase();
+              String searchText = searchController.text.toLowerCase();
               return (!glutenFree || dish['Gluten'] == glutenFree) &&
                   (!lactoseFree || dish['Lactose'] == lactoseFree) &&
                   (!vegetarian || dish['Vegetarian'] == vegetarian) &&
                   (!vegan || dish['Vegan'] == vegan) &&
-                  (!halal || dish['Halal'] == halal);
+                  (!halal || dish['Halal'] == halal) &&
+                  (dishName.contains(searchText));
             }).toList();
 
             return GridView.builder(
@@ -91,7 +117,7 @@ class _ListDishesState extends State<ListDishes> {
                 crossAxisCount: 1,
                 crossAxisSpacing: 0.0,
                 mainAxisSpacing: 0.0,
-                childAspectRatio: 5 / 3, // You can adjust this ratio as needed
+                childAspectRatio: 5 / 3,
               ),
               itemCount: filteredDishes.length,
               itemBuilder: (BuildContext context, int index) {
@@ -113,6 +139,9 @@ class _ListDishesState extends State<ListDishes> {
     );
   }
 }
+
+// The rest of your ListItem and other code remains unchanged.
+
 
 class ListItem extends StatelessWidget {
   final Map user1;
@@ -189,10 +218,9 @@ class ListItem extends StatelessWidget {
                             fontSize: 18,
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
                                   Icons.bookmark_border, // Иконка сердца
@@ -223,8 +251,7 @@ class ListItem extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+
 
                       ],
                     ),

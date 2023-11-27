@@ -1,9 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:tasty_and_easy/country_dishes/dishes.dart';
+import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 
-import '../top/top_1_dishes.dart';
-import '../country_dishes/dishes.dart';
+class Dish {
+  String name;
+  String imageUrl;
+  int likes;
+  String mealType;
+  String time;
+
+  Dish(this.name, this.imageUrl, this.likes, this.mealType, this.time);
+}
 
 class FirstPage extends StatefulWidget {
   const FirstPage({Key? key}) : super(key: key);
@@ -11,19 +20,11 @@ class FirstPage extends StatefulWidget {
   @override
   _FirstPageState createState() => _FirstPageState();
 }
-class Dish {
-  String name;
-  String imageUrl;
-  int likes;
-  String mealType; // "Breakfast" or "Dinner"
 
-  Dish(this.name, this.imageUrl, this.likes, this.mealType);
-}
 class _FirstPageState extends State<FirstPage> {
   ScrollController _scrollController = ScrollController();
   Query dbRef = FirebaseDatabase.instance.reference().child('Country');
   final databaseReference = FirebaseDatabase.instance.reference();
-
 
   List<Dish> breakfastDishes = [];
   List<Dish> dinnerDishes = [];
@@ -31,21 +32,25 @@ class _FirstPageState extends State<FirstPage> {
   Dish? mostLikedBreakfastDish;
   Dish? mostLikedDinnerDish;
 
+  String? mostPopularDishImageUrl;
+  String? mostPopularDishname;
+  String? mostPopularDishlike;
+  String? mostPopulartime;
+
   @override
   void initState() {
     super.initState();
     fetchDataFromDatabase();
+    compareDishes();
   }
 
   void fetchDataFromDatabase() {
-    // Слушаем изменения в Breakfast
     databaseReference.child('Breakfast').onValue.listen((event) {
       updateDishesList('Breakfast', event.snapshot);
       printMostLikedDish('Breakfast');
       compareDishes();
     });
 
-    // Слушаем изменения в Dinner
     databaseReference.child('Dinner').onValue.listen((event) {
       updateDishesList('Dinner', event.snapshot);
       printMostLikedDish('Dinner');
@@ -61,11 +66,16 @@ class _FirstPageState extends State<FirstPage> {
 
       if (dishesData is Map) {
         dishesData.forEach((key, value) {
-          if (value is Map && value.containsKey('number_of_likes') && value.containsKey('image_url')) {
+          if (value is Map &&
+              value.containsKey('number_of_likes') &&
+              value.containsKey('image_url') &&
+              value.containsKey('time')) {
             var numberOfLikes = value['number_of_likes'] as int;
             var imageUrl = value['image_url'] as String;
-            var dish = Dish(key, imageUrl, numberOfLikes, category);
+            var dishName = key;
+            var time = value['time'] as String;
 
+            var dish = Dish(dishName, imageUrl, numberOfLikes, category, time);
             dishesList.add(dish);
           }
         });
@@ -76,37 +86,63 @@ class _FirstPageState extends State<FirstPage> {
           dinnerDishes = dishesList;
         }
 
-        // Вызываем compareDishes() после загрузки данных
         compareDishes();
       }
     }
   }
 
   void printMostLikedDish(String category) {
-    List<Dish> dishesList = category == 'Breakfast' ? breakfastDishes : dinnerDishes;
+    List<Dish> dishesList =
+    category == 'Breakfast' ? breakfastDishes : dinnerDishes;
 
     if (dishesList.isNotEmpty) {
-      var mostLikedDish = dishesList.reduce((curr, next) => curr.likes > next.likes ? curr : next);
+      var mostLikedDish = dishesList
+          .reduce((curr, next) => curr.likes > next.likes ? curr : next);
 
       if (category == 'Breakfast') {
         mostLikedBreakfastDish = mostLikedDish;
-        print('Most Liked Breakfast Dish: ${mostLikedDish.name}, Likes: ${mostLikedDish.likes}, Image URL: ${mostLikedDish.imageUrl}');
       } else if (category == 'Dinner') {
         mostLikedDinnerDish = mostLikedDish;
-        print('Most Liked Dinner Dish: ${mostLikedDish.name}, Likes: ${mostLikedDish.likes}, Image URL: ${mostLikedDish.imageUrl}');
       }
     }
   }
 
   void compareDishes() {
     if (mostLikedBreakfastDish != null && mostLikedDinnerDish != null) {
-      if (mostLikedBreakfastDish!.likes > mostLikedDinnerDish!.likes) {
-        print('The most liked dish is from Breakfast: ${mostLikedBreakfastDish!.name}');
-      } else if (mostLikedDinnerDish!.likes > mostLikedBreakfastDish!.likes) {
-        print('The most liked dish is from Dinner: ${mostLikedDinnerDish!.name}');
-      } else {
-        print('The most liked dishes from Breakfast and Dinner have the same number of likes.');
-      }
+      mostPopularDishImageUrl =
+      mostLikedBreakfastDish!.likes > mostLikedDinnerDish!.likes
+          ? mostLikedBreakfastDish!.imageUrl
+          : mostLikedDinnerDish!.imageUrl;
+
+      mostPopularDishname =
+      mostLikedBreakfastDish!.likes > mostLikedDinnerDish!.likes
+          ? mostLikedBreakfastDish!.name
+          : mostLikedDinnerDish!.name;
+
+      mostPopularDishlike =
+      mostLikedBreakfastDish!.likes > mostLikedDinnerDish!.likes
+          ? mostLikedBreakfastDish!.likes.toString()
+          : mostLikedDinnerDish!.likes.toString();
+
+
+      mostPopulartime =
+      mostLikedBreakfastDish!.likes > mostLikedDinnerDish!.likes
+          ? mostLikedBreakfastDish!.time.toString()
+          : mostLikedDinnerDish!.time.toString();
+
+
+
+
+      var mostPopularDish = mostLikedBreakfastDish!.likes > mostLikedDinnerDish!.likes
+          ? mostLikedBreakfastDish!
+          : mostLikedDinnerDish!;
+
+      print("Most Popular Dish:");
+      print("Name: ${mostPopularDish.name}");
+      print("Likes: ${mostPopularDish.likes}");
+      print("Image URL: $mostPopularDishImageUrl");
+
+      setState(() {});
     }
   }
 
@@ -115,8 +151,6 @@ class _FirstPageState extends State<FirstPage> {
     _scrollController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +163,7 @@ class _FirstPageState extends State<FirstPage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
-                expandedHeight: 200.0,
+                expandedHeight: 170.0,
                 floating: false,
                 pinned: true,
                 backgroundColor: Colors.transparent,
@@ -157,47 +191,155 @@ class _FirstPageState extends State<FirstPage> {
             stream: dbRef.onValue,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               }
 
-              if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+              if (snapshot.hasData &&
+                  snapshot.data!.snapshot.value != null &&
+                  (snapshot.data!.snapshot.value as Map).isNotEmpty) {
                 Map<String, dynamic> users = Map<String, dynamic>.from(
-                  (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
+                  (snapshot.data!.snapshot.value as Map)
+                      .cast<String, dynamic>(),
                 );
 
-                // Преобразование Map в List для сортировки
                 List userList = users.values.toList();
 
-                // Сортировка списка пользователей по количеству лайков (или другому критерию)
-                userList.sort((a, b) =>
-                    (b['number_of_likes'] ?? 0).compareTo(a['number_of_likes'] ?? 0));
+                userList.sort((a, b) => (b['number_of_likes'] ?? 0)
+                    .compareTo(a['number_of_likes'] ?? 0));
 
                 return Padding(
-                  padding: EdgeInsets.only(top: 50),
-                  child: Column(
+                  padding: EdgeInsets.only(top: 10),
+                  child: ListView(
                     children: [
-                      Text(
-                        "Traditional Dishes",
-                        style: TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Container(
-                        width: 500,
-                        height: 200,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: userList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final user = userList[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: listItem(user: user),
-                            );
-                          },
-                        ),
+                      Column(
+                        children: [
+                          Text(
+                            "Traditional Dishes",
+                            style: TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Container(
+                            height: 200,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: userList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final user = userList[index];
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: listItem(user: user),
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top : 10.0),
+                            child: Text(
+                              "Best Dishes",
+                              style: TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 250,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.amber,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: mostPopularDishImageUrl != null
+                                ? Stack(
+                              alignment: Alignment.bottomLeft,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Page_recept(
+                                          dishName: mostPopularDishname!,
+                                          dishtime: mostPopulartime!, SSS: mostPopularDishname!,
+                                          // Другие параметры, которые вам нужны
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.network(
+                                      mostPopularDishImageUrl!,
+                                      width: 500,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
+
+                                  ),
+                                ),
+                                Container(
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Colors.black.withOpacity(0.5),
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      mostPopularDishname!,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.bookmark_border, // Иконка сердца
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: 10), // Расстояние между иконкой и текстом
+                                        Text(
+                                          mostPopularDishlike!,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Icon(
+                                          Icons.access_time, // Иконка сердца
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          mostPopulartime!,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                                : Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -212,13 +354,12 @@ class _FirstPageState extends State<FirstPage> {
     );
   }
 
-
   Widget listItem({required Map user}) {
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>country_dish(),
+            builder: (context) => country_dish(),
           ),
         );
       },
@@ -226,8 +367,8 @@ class _FirstPageState extends State<FirstPage> {
         width: 200,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.amber, // Задайте цвет золотой линии
-            width: 2.0, // Задайте толщину золотой линии
+            color: Colors.amber,
+            width: 2.0,
           ),
           borderRadius: BorderRadius.circular(20),
           color: Colors.white,

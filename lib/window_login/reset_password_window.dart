@@ -45,7 +45,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       } else {
         SnackBarService.showSnackBar(
           context,
-          '++++Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
+          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
           true,
         );
         return;
@@ -67,8 +67,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Color(0xFF0B0E12),
         title: const Text('Сброс пароля'),
       ),
+      backgroundColor: Color(0xFF0B0E12),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
@@ -84,6 +86,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ? 'Введите правильный Email'
                     : null,
                 decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                  ),
+                  hintStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(),
                   hintText: 'Введите Email',
                 ),
@@ -92,6 +101,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ElevatedButton(
                 onPressed: resetPassword,
                 child: const Center(child: Text('Сбросить пароль')),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 8.0), // Отступы кнопки
+                ),
               ),
             ],
           ),

@@ -83,8 +83,10 @@ class _SignUpScreen extends State<SignUpScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Color(0xFF0B0E12),
         title: const Text('Зарегистрироваться'),
       ),
+      backgroundColor: Color(0xFF0B0E12),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
@@ -100,24 +102,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ? 'Введите правильный Email'
                     : null,
                 decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                  ),
                   border: OutlineInputBorder(),
-                  hintText: 'Введите Email',
+                  hintText: 'Введите Email' ,
+                  hintStyle: TextStyle(color: Colors.white),
                 ),
               ),
-             /* const SizedBox(height: 30),
-              TextFormField(
-                keyboardType: TextInputType.name,
-                autocorrect: false,
-                controller: nameTextInputController,
-                validator: (name) =>
-                name != null
-                    ? 'Введите  Name'
-                    : null,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Введите Name',
-                ),
-              ),*/
+
               const SizedBox(height: 30),
               TextFormField(
                 autocorrect: false,
@@ -128,8 +124,15 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ? 'Минимум 6 символов'
                     : null,
                 decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                  ),
                   border: const OutlineInputBorder(),
                   hintText: 'Введите пароль',
+                  hintStyle: TextStyle(color: Colors.white),
                   suffix: InkWell(
                     onTap: togglePasswordView,
                     child: Icon(
@@ -151,6 +154,13 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ? 'Минимум 6 символов'
                     : null,
                 decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                  ),
+                  hintStyle: TextStyle(color: Colors.white),
                   border: const OutlineInputBorder(),
                   hintText: 'Введите пароль еще раз',
                   suffix: InkWell(
@@ -168,13 +178,21 @@ class _SignUpScreen extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed: signUp,
                 child: const Center(child: Text('Регистрация')),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 8.0), // Отступы кнопки
+                ),
               ),
+
               const SizedBox(height: 30),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text(
                   'Войти',
                   style: TextStyle(
+                    color: Colors.white,
                     decoration: TextDecoration.underline,
                   ),
                 ),

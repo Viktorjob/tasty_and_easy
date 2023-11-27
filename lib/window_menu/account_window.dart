@@ -28,13 +28,25 @@ class _AccountScreenState extends State<Accountwindow> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Color(0xFF0B0E12),
+        title: (user == null)
+            ? Text("Profil", style: TextStyle(color: Colors.white, fontSize: 25,))
+            : Text("Your Profil", style: TextStyle(color: Colors.white, fontSize: 25,)),
+      ),
+
+
+      backgroundColor: Color(0xFF0B0E12),
       body: Center(
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Ваш Email: ${user?.email}'),
-            Text('Ваш uid: ${uid}'),
+            Text('Ваш Email: ${user?.email}', style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),),
+
             if (user == null)
               TextButton(
                 onPressed: () {
@@ -43,12 +55,29 @@ class _AccountScreenState extends State<Accountwindow> {
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
-                child: const Text('Login'),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 8.0), // Отступы кнопки
+                ),
+                child: const Text('Login', style: TextStyle(
+                  color: Colors.white,
+
+                ),),
               )
             else
               TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 8.0), // Отступы кнопки
+                ),
                 onPressed: () => signOut(),
-                child: const Text('Leave'),
+                child: const Text('Leave', style: TextStyle(
+                  color: Colors.white,
+                ),),
               ),
           ],
         ),

@@ -3,7 +3,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -16,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailTextInputController = TextEditingController();
   TextEditingController passwordTextInputController = TextEditingController();
   TextEditingController nameTextInputController = TextEditingController();
-  //глобалный ключ для проверки юзера
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -57,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         SnackBarService.showSnackBar(
           context,
-          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.!!!!!',
+          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
           true,
         );
         return;
@@ -72,8 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Войти'),
+        backgroundColor: Color(0xFF0B0E12), // Цвет AppBar
+        title: const Text('Войти', style: TextStyle(color: Colors.white)), // Цвет текста AppBar
       ),
+      backgroundColor: Color(0xFF0B0E12), // Цвет фона Scaffold
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
@@ -90,8 +90,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     : null,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                  ),
                   hintText: 'Введите Email',
+                  hintStyle: TextStyle(color: Colors.white), // Цвет подсказки
                 ),
+                style: TextStyle(color: Colors.white), // Цвет текста
               ),
               const SizedBox(height: 30),
               TextFormField(
@@ -103,23 +111,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     : null,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                  ),
                   border: const OutlineInputBorder(),
                   hintText: 'Введите пароль',
+                  hintStyle: TextStyle(color: Colors.white), // Цвет подсказки
                   suffix: InkWell(
                     onTap: togglePasswordView,
                     child: Icon(
                       isHiddenPassword
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      color: Colors.black,
+                      color: Colors.white, // Цвет иконки
                     ),
                   ),
                 ),
+                style: TextStyle(color: Colors.white), // Цвет текста
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: login,
                 child: const Center(child: Text('Войти')),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.amber, // Цвет кнопки
+                ),
               ),
               const SizedBox(height: 30),
               TextButton(
@@ -128,13 +147,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   'Регистрация',
                   style: TextStyle(
                     decoration: TextDecoration.underline,
+                    color: Colors.white, // Цвет текста
                   ),
                 ),
               ),
               TextButton(
                 onPressed: () =>
                     Navigator.of(context).pushNamed('/reset_password'),
-                child: const Text('Сбросить пароль'),
+                child: const Text(
+                  'Сбросить пароль',
+                  style: TextStyle(color: Colors.white), // Цвет текста
+                ),
               ),
             ],
           ),
