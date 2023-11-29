@@ -21,11 +21,15 @@ class _Page_receptState extends State<Page_recept> {
   Map<String, dynamic>? data;
   String? uid = FirebaseAuth.instance.currentUser?.uid;
   bool showScrollIcon = true;
+  List<String> likedKeys = [];
+  String newLikeKey = "";
 
   @override
   void initState() {
     super.initState();
+
     dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
+    loadLikedKeys();
     loadIsFavorite();
     loadLikesCount();
   }
@@ -36,6 +40,19 @@ class _Page_receptState extends State<Page_recept> {
     setState(() {
       isFavorite = favorite || (data != null && data!['is_favorite'] == true);
     });
+  }
+
+  void loadLikedKeys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> keys = prefs.getStringList('likedKeys') ?? [];
+    setState(() {
+      likedKeys = keys;
+    });
+  }
+
+  void saveLikedKeys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('likedKeys', likedKeys);
   }
 
   void loadLikesCount() async {
@@ -68,6 +85,7 @@ class _Page_receptState extends State<Page_recept> {
     likesRef.set(likesCount);
   }
 
+
   void toggleFavorite() {
     setState(() {
       isFavorite = !isFavorite;
@@ -84,11 +102,17 @@ class _Page_receptState extends State<Page_recept> {
     FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
 
     if (isFavorite && data != null) {
-      likeListRef.push().set({
+      DatabaseReference newLikeRef = likeListRef.push();
+      // Update the existing class-level variable, don't redeclare
+      newLikeKey = newLikeRef.key!;
+
+      newLikeRef.set({
         'name': widget.dishName,
         'image_url': data!['image_url'],
         'time': data!['time'],
         'like': likesCount,
+      }).then((_) {
+        print('Сгенерированный ключ для нового элемента: $newLikeKey');
       });
     } else {
       likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
@@ -101,10 +125,19 @@ class _Page_receptState extends State<Page_recept> {
         }
       });
     }
+    // Adding or removing the key from the list
+    if (isFavorite) {
+      likedKeys.add(newLikeKey);
+    } else {
+      likedKeys.remove(newLikeKey);
+    }
+    saveLikedKeys();
   }
 
-  Widget _buildIngredientsBlock(Map<String, dynamic> data) {
+    Widget _buildIngredientsBlock(Map<String, dynamic> data) {
     List<Widget> ingredientsWidgets = [];
+      print(likedKeys);
+
 
     for (int i = 1; i <= 13; i++) {
       String ingredientKey = 'ingredient_$i';

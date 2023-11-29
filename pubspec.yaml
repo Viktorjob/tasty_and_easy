@@ -21,7 +21,7 @@ dependencies:
   path_provider: ^2.1.1
   parallax: ^1.0.3
   # Add this line at the root level, aligned with flutter
-
+  uuid: ^4.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
