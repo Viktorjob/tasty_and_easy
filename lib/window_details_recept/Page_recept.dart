@@ -42,16 +42,33 @@ class _Page_receptState extends State<Page_recept> {
     });
   }
 
+
   void loadLikedKeys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> keys = prefs.getStringList('likedKeys') ?? [];
     setState(() {
       likedKeys = keys;
     });
+
+    DatabaseReference likedKeysRef =  FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+    likedKeysRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        List<String> updatedKeys = List<String>.from((event.snapshot.value as List).cast<String>());
+        setState(() {
+          likedKeys = updatedKeys;
+        });
+      } else {
+        // Если данные в базе данных пусты, считаем, что все ключи удалены
+        setState(() {
+          likedKeys = [];
+        });
+      }
+    });
   }
 
   void saveLikedKeys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('sfsdfsfsd');
     prefs.setStringList('likedKeys', likedKeys);
   }
 
@@ -136,6 +153,7 @@ class _Page_receptState extends State<Page_recept> {
 
     Widget _buildIngredientsBlock(Map<String, dynamic> data) {
     List<Widget> ingredientsWidgets = [];
+       print('++++++');
       print(likedKeys);
 
 
