@@ -27,7 +27,6 @@ class _Page_receptState extends State<Page_recept> {
   @override
   void initState() {
     super.initState();
-
     dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
     loadLikedKeys();
     loadIsFavorite();
@@ -155,6 +154,7 @@ class _Page_receptState extends State<Page_recept> {
     List<Widget> ingredientsWidgets = [];
        print('++++++');
       print(likedKeys);
+      print('------');
 
 
     for (int i = 1; i <= 13; i++) {
@@ -307,6 +307,7 @@ class _Page_receptState extends State<Page_recept> {
         title: Text(widget.dishName),
       ),
       body: StreamBuilder(
+        key: UniqueKey(),
         stream: dbRef!.onValue,
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
