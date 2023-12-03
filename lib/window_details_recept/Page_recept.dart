@@ -62,14 +62,24 @@ class _Page_receptState extends State<Page_recept> {
 
         setState(() {
           likedKeys = keysList;
+          // Проверка наличия блюда в списке likedKeys
+          isFavorite = likedKeys.any((key) => updatedKeys?[key]?['name'] == widget.dishName);
+        });
+
+        // Вывести названия блюд для каждого ключа
+        likedKeys.forEach((key) {
+          print('Dish Name: ${updatedKeys?[key]?['name']}');
         });
       } else {
         setState(() {
           likedKeys = [];
+          isFavorite = false; // Если список пуст, блюда нет в избранном
         });
       }
     });
   }
+
+
 
 
 
@@ -161,6 +171,8 @@ class _Page_receptState extends State<Page_recept> {
     List<Widget> ingredientsWidgets = [];
     print('++++++');
     print(likedKeys);
+    print('------');
+    print(widget.dishName);
 
 
     for (int i = 1; i <= 13; i++) {
@@ -299,6 +311,7 @@ class _Page_receptState extends State<Page_recept> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Color(0xFF0B0E12),
       appBar: AppBar(
