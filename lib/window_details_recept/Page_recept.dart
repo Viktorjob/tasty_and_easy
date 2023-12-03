@@ -25,13 +25,17 @@ class _Page_receptState extends State<Page_recept> {
   String newLikeKey = "";
 
   @override
+
   void initState() {
     super.initState();
+
     dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
     loadLikedKeys();
     loadIsFavorite();
     loadLikesCount();
   }
+
+
 
   void loadIsFavorite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -41,29 +45,34 @@ class _Page_receptState extends State<Page_recept> {
     });
   }
 
-
   void loadLikedKeys() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> keys = prefs.getStringList('likedKeys') ?? [];
-    setState(() {
-      likedKeys = keys;
-    });
-
-    DatabaseReference likedKeysRef =  FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
-    likedKeysRef.onValue.listen((event) {
+    DatabaseReference likedKeysRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+    likedKeysRef.once().then((event) {
       if (event.snapshot.value != null) {
-        List<String> updatedKeys = List<String>.from((event.snapshot.value as List).cast<String>());
+        Map<dynamic, dynamic>? updatedKeys = event.snapshot.value as Map?;
+        print('Data from Firebase: $updatedKeys');
+
+        List<String> keysList = [];
+
+        if (updatedKeys != null) {
+          updatedKeys.forEach((key, value) {
+            keysList.add(key.toString());
+          });
+        }
+
         setState(() {
-          likedKeys = updatedKeys;
+          likedKeys = keysList;
         });
       } else {
-        // Если данные в базе данных пусты, считаем, что все ключи удалены
         setState(() {
           likedKeys = [];
         });
       }
     });
   }
+
+
+
 
   void saveLikedKeys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -102,7 +111,7 @@ class _Page_receptState extends State<Page_recept> {
   }
 
 
-  void toggleFavorite() {
+  void toggleFavorite() async {
     setState(() {
       isFavorite = !isFavorite;
       likesCount += isFavorite ? 1 : -1;
@@ -112,26 +121,26 @@ class _Page_receptState extends State<Page_recept> {
 
     DatabaseReference likesRef =
     FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
-    likesRef.set(likesCount);
+    await likesRef.set(likesCount);
 
     DatabaseReference likeListRef =
     FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
 
     if (isFavorite && data != null) {
       DatabaseReference newLikeRef = likeListRef.push();
-      // Update the existing class-level variable, don't redeclare
       newLikeKey = newLikeRef.key!;
 
-      newLikeRef.set({
+      await newLikeRef.set({
         'name': widget.dishName,
         'image_url': data!['image_url'],
         'time': data!['time'],
         'like': likesCount,
-      }).then((_) {
-        print('Сгенерированный ключ для нового элемента: $newLikeKey');
       });
+
+      print('Сгенерированный ключ для нового элемента: $newLikeKey');
     } else {
-      likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
+      // ожидайте выполнения операции удаления
+      await likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
         final snapshot = event.snapshot;
         Map<dynamic, dynamic>? values = snapshot.value as Map?;
         if (values != null) {
@@ -141,20 +150,17 @@ class _Page_receptState extends State<Page_recept> {
         }
       });
     }
-    // Adding or removing the key from the list
-    if (isFavorite) {
+
+    setState(() {
       likedKeys.add(newLikeKey);
-    } else {
-      likedKeys.remove(newLikeKey);
-    }
+    });
     saveLikedKeys();
   }
 
-    Widget _buildIngredientsBlock(Map<String, dynamic> data) {
+  Widget _buildIngredientsBlock(Map<String, dynamic> data) {
     List<Widget> ingredientsWidgets = [];
-       print('++++++');
-      print(likedKeys);
-      print('------');
+    print('++++++');
+    print(likedKeys);
 
 
     for (int i = 1; i <= 13; i++) {
@@ -306,9 +312,8 @@ class _Page_receptState extends State<Page_recept> {
         ),
         title: Text(widget.dishName),
       ),
-      body: StreamBuilder(
-        key: UniqueKey(),
-        stream: dbRef!.onValue,
+      body: FutureBuilder(
+        future: dbRef!.once(), // Загрузка данных один раз
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             data = Map<String, dynamic>.from(
