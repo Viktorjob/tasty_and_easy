@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:tasty_and_easy/country_dishes/dishes.dart';
+import 'package:tasty_and_easy/country_dishes/dishes_categoria.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 
 class Dish {
@@ -353,16 +353,21 @@ class _FirstPageState extends State<FirstPage> {
       ),
     );
   }
-
   Widget listItem({required Map user}) {
+
+    String? Name_country = user['name'];
     return InkWell(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => country_dish(),
-          ),
-        );
-      },
+        onTap: () {
+          print('Tapped on $Name_country');
+          if (Name_country != null) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => country_dish(country_dish_name: Name_country),
+              ),
+            );
+          }
+        },
+
       child: Container(
         width: 200,
         decoration: BoxDecoration(

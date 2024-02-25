@@ -43,6 +43,7 @@ class _ListDishesState extends State<ListDishes> {
         title: isSearching
             ? TextField(
           controller: searchController,
+          style: TextStyle(color: Colors.white), // Задаем цвет текста ввода
           decoration: InputDecoration(
             hintText: 'Search...',
             hintStyle: TextStyle(color: Colors.white),
@@ -53,6 +54,7 @@ class _ListDishesState extends State<ListDishes> {
           },
         )
             : Text(dishKey),
+
         backgroundColor: Color(0xFF0B0E12),
         actions: <Widget>[
           IconButton(
