@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tasty_and_easy/services_firebase/file_snack.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordTextInputController = TextEditingController();
   TextEditingController nameTextInputController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   @override
   void dispose() {
     emailTextInputController.dispose();
@@ -64,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +142,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   primary: Colors.amber, // Цвет кнопки
                 ),
               ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => _signInWithGoogle(),
+
+                child: const Center(child: Text('Google')),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red, // Цвет кнопки
+                ),
+              ),
               const SizedBox(height: 30),
               TextButton(
                 onPressed: () => Navigator.of(context).pushNamed('/signup'),
@@ -165,4 +176,30 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  _signInWithGoogle()async{
+
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+    try {
+
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+
+      if(googleSignInAccount != null ){
+        final GoogleSignInAuthentication googleSignInAuthentication = await
+        googleSignInAccount.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
+
+       await _firebaseAuth.signInWithCredential(credential);
+        Navigator.pushNamed(context, "/home");
+      }
+    }catch(e) {
+      print('Error');
+    }
+
+  }
+
 }
