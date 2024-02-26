@@ -179,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _signInWithGoogle()async{
 
     final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+    await _googleSignIn.signOut();
     try {
 
       final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
