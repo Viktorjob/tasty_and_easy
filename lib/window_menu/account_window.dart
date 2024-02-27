@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasty_and_easy/window_login/login_window.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,19 +35,29 @@ class _AccountScreenState extends State<Accountwindow> {
             ? Text("Profil", style: TextStyle(color: Colors.white, fontSize: 25,))
             : Text("Your Profil", style: TextStyle(color: Colors.white, fontSize: 25,)),
       ),
-
-
       backgroundColor: Color(0xFF0B0E12),
       body: Center(
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Ваш Email: ${user?.email}', style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),),
-
+            // Проверяем, аутентифицирован ли пользователь
+            if (user != null)
+              FutureBuilder(
+                future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
+                builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else {
+                    if (snapshot.hasData && snapshot.data!.exists) {
+                      String userName = snapshot.data!.get('name');
+                      return Text('Привет, $userName!', style: TextStyle(color: Colors.white));
+                    } else {
+                      return Text('Привет!', style: TextStyle(color: Colors.white));
+                    }
+                  }
+                },
+              ),
+            Text('Ваш Email: ${user?.email}', style: TextStyle(color: Colors.white, fontSize: 12,)),
             if (user == null)
               TextButton(
                 onPressed: () {
@@ -58,32 +69,40 @@ class _AccountScreenState extends State<Accountwindow> {
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.amber,
                   padding: EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 8.0), // Отступы кнопки
+                    horizontal: 20.0,
+                    vertical: 8.0,
+                  ), // Отступы кнопки
                 ),
-                child: const Text('Login', style: TextStyle(
-                  color: Colors.white,
-
-                ),),
+                child: const Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               )
             else
               TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.amber,
                   padding: EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 8.0), // Отступы кнопки
+                    horizontal: 20.0,
+                    vertical: 8.0,
+                  ), // Отступы кнопки
                 ),
                 onPressed: () => signOut(),
-                child: const Text('Leave', style: TextStyle(
-                  color: Colors.white,
-                ),),
+                child: const Text(
+                  'Leave',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
           ],
         ),
       ),
     );
   }
+
 }
 
 

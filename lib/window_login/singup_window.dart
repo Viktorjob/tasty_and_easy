@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tasty_and_easy/services_firebase/file_snack.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +17,8 @@ class _SignUpScreen extends State<SignUpScreen> {
   TextEditingController emailTextInputController = TextEditingController();
   TextEditingController passwordTextInputController = TextEditingController();
   TextEditingController passwordTextRepeatInputController = TextEditingController();
- // TextEditingController nameTextInputController = TextEditingController();
+  TextEditingController nameTextInputController = TextEditingController();
+
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -52,10 +54,21 @@ class _SignUpScreen extends State<SignUpScreen> {
     }
 
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailTextInputController.text.trim(),
         password: passwordTextInputController.text.trim(),
       );
+
+      // Получаем текущего пользователя
+      User? user = userCredential.user;
+
+      // Сохраняем имя пользователя в базе данных Firestore или Realtime Database
+      await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
+        'name': nameTextInputController.text,
+      });
+
+      // Переход на главный экран
+      navigator.pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
     } on FirebaseAuthException catch (e) {
       print(e.code);
 
@@ -74,9 +87,8 @@ class _SignUpScreen extends State<SignUpScreen> {
         );
       }
     }
-
-    navigator.pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +124,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                   hintText: 'Введите Email' ,
                   hintStyle: TextStyle(color: Colors.white),
                 ),
+                style: TextStyle(color: Colors.white), // Цвет текста
               ),
 
               const SizedBox(height: 30),
@@ -143,6 +156,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ),
                   ),
                 ),
+                style: TextStyle(color: Colors.white), // Цвет текста
               ),
               const SizedBox(height: 30),
               TextFormField(
@@ -173,6 +187,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ),
                   ),
                 ),
+                style: TextStyle(color: Colors.white), // Цвет текста
               ),
               const SizedBox(height: 30),
               ElevatedButton(
@@ -184,6 +199,30 @@ class _SignUpScreen extends State<SignUpScreen> {
                       horizontal: 20.0,
                       vertical: 8.0), // Отступы кнопки
                 ),
+              ),
+
+              const SizedBox(height: 30),
+              TextFormField(
+                autocorrect: false,
+                controller: nameTextInputController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Введите ваше имя';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
+                  border: OutlineInputBorder(),
+                  hintText: 'Введите ваше имя',
+                  hintStyle: TextStyle(color: Colors.white),
+                ),
+                style: TextStyle(color: Colors.white),
               ),
 
               const SizedBox(height: 30),
