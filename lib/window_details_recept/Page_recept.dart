@@ -205,7 +205,7 @@ class _Page_receptState extends State<Page_recept> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(imageBorderRadius),
               child: Image.network(
-                data!['image_url'].toString(),
+                data['image_url'].toString(),
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: maxImageHeight,

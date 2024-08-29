@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: login,
                 child: const Center(child: Text('Войти')),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.amber, // Цвет кнопки
+                  backgroundColor: Colors.amber, // Цвет кнопки
                 ),
               ),
               const SizedBox(height: 10),
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 child: const Center(child: Text('Google')),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red, // Цвет кнопки
+                  backgroundColor: Colors.red, // Цвет кнопки
                 ),
               ),
               const SizedBox(height: 30),

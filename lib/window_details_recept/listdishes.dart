@@ -53,9 +53,9 @@ class _ListDishesState extends State<ListDishes> {
             setState(() {});
           },
         )
-            : Text(dishKey),
+            : Text(dishKey,style: TextStyle(color: Colors.white),),
 
-        backgroundColor: Color(0xFF0B0E12),
+        backgroundColor: Color(0xFF120B0E),
         actions: <Widget>[
           IconButton(
             icon: Icon(isSearching ? Icons.cancel : Icons.search),
@@ -91,6 +91,7 @@ class _ListDishesState extends State<ListDishes> {
             },
           ),
         ],
+        iconTheme: IconThemeData(color: Colors.white),// для всех иконок
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
