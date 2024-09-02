@@ -56,7 +56,8 @@ class _LikeWindowState extends State<LikeWindow> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorite dishes"),
+        title: Text("Favorite dishes",style: TextStyle(
+          color: Colors.white) ),
         backgroundColor: Color(0xFF0B0E12),
       ),
       backgroundColor: Color(0xFF0B0E12),
@@ -113,7 +114,6 @@ class _LikeWindowState extends State<LikeWindow> {
     String? dishName = user['name'];
     String? dishtime = user['time'];
 
-
     bool isLiked = likedItems.contains(itemKey);
 
     return InkWell(
@@ -124,15 +124,14 @@ class _LikeWindowState extends State<LikeWindow> {
           }
         });
 
-        if (dishName != null || dishtime != null ) {
+        if (dishName != null || dishtime != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) =>
-                  Page_recept(
-                    dishName: dishName ?? '',
-                    dishtime: dishtime ?? '',
-                    SSS: '',
-                  ),
+              builder: (context) => Page_recept(
+                dishName: dishName ?? '',
+                dishtime: dishtime ?? '',
+                SSS: '',
+              ),
             ),
           );
         }
@@ -159,16 +158,39 @@ class _LikeWindowState extends State<LikeWindow> {
                 fit: BoxFit.cover,
               ),
             ),
-          ), // Image with dark overlay
-          // Dark overlay at the bottom
+          ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Черный контейнер с закругленными углами
               Container(
-                // Ваш первый контейнер с текстом dishName
+                height: 55,
+                width: 220,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(
+                  dishName ?? '',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              // Контейнер с информацией, имеющий закругленные углы
               Container(
-                height: 30.0,
+                height: 40.0,
+                width: 220,
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
                   color: Color(0xFF0B0E12),
@@ -178,9 +200,10 @@ class _LikeWindowState extends State<LikeWindow> {
                   ),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
+                      flex: 2,
                       child: Text(
                         dishtime ?? '',
                         style: TextStyle(
@@ -189,30 +212,20 @@ class _LikeWindowState extends State<LikeWindow> {
                         ),
                       ),
                     ),
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 24.0,
+                    ),
+                    SizedBox(width: 5),
                     Text(
-                      '|',
+                      user['like'].toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Expanded(
-                      child: Text(
-                        user['like'].toString(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '|',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
+                    SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
                         deleteData(itemKey);
@@ -221,7 +234,7 @@ class _LikeWindowState extends State<LikeWindow> {
                         width: 40,
                         height: 40,
                         child: Icon(
-                          Icons.bookmark_border,
+                          Icons.delete,
                           color: Colors.white,
                         ),
                       ),
@@ -231,9 +244,11 @@ class _LikeWindowState extends State<LikeWindow> {
               ),
             ],
           ),
-
         ],
-      ), // Container for the image
+      ),
+
+
     );
   }
+
 }
