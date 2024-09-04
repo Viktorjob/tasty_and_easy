@@ -159,91 +159,103 @@ class _LikeWindowState extends State<LikeWindow> {
               ),
             ),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
+          Stack(
+            //mainAxisSize: MainAxisSize.min,
             children: [
-              // Черный контейнер с закругленными углами
-              Container(
-                height: 55,
-                width: 220,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
-
+              // Черный контейнер с названием блюда, расположенный сверху
+              Positioned(
+                top: 100.0, // Позиционируем его так, чтобы он "залезал" на нижний контейнер
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 65,
+                  width: 220,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
                   ),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  dishName ?? '',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    dishName ?? '',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              // Контейнер с информацией, имеющий закругленные углы
-              Container(
-                height: 40.0,
-                width: 220,
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: Color(0xFF0B0E12),
-                  border: Border.all(
-                    color: Colors.amber,
-                    width: 2.0,
+
+              // Контейнер с информацией, имеющий закругленные углы и расположенный снизу
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 40.0,
+                  width: 220,
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Color(0xFF0B0E12),
+                    border: Border.all(
+                      color: Colors.amber,
+                      width: 2.0,
+                    ),
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        dishtime ?? '',
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          dishtime ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                        size: 24.0,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        user['like'].toString(),
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 24.0,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      user['like'].toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: () {
-                        deleteData(itemKey);
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
+                      SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          deleteData(itemKey);
+                        },
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
-          ),
+          )
+
+
         ],
       ),
 
