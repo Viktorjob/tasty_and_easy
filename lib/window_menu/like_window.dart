@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class LikeWindow extends StatefulWidget {
 
@@ -36,7 +37,7 @@ class _LikeWindowState extends State<LikeWindow> {
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Save recipes"),
+          title: Text("Save recipes",style: const TextStyle(color: Colors.white)),
           backgroundColor: Color(0xFF0B0E12),
         ),
         backgroundColor: Color(0xFF0B0E12),
@@ -160,11 +161,10 @@ class _LikeWindowState extends State<LikeWindow> {
             ),
           ),
           Stack(
-            //mainAxisSize: MainAxisSize.min,
             children: [
               // Черный контейнер с названием блюда, расположенный сверху
               Positioned(
-                top: 100.0, // Позиционируем его так, чтобы он "залезал" на нижний контейнер
+                top: 100.0,
                 left: 0,
                 right: 0,
                 child: Container(
@@ -178,15 +178,16 @@ class _LikeWindowState extends State<LikeWindow> {
                     ),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
+                  child: AutoSizeText(
                     dishName ?? '',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
+                      fontSize: 16.0,  // Максимальный размер шрифта
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,  // Ограничиваем текст максимум двумя строками
+                    minFontSize: 10,  // Минимальный размер шрифта
+                    overflow: TextOverflow.ellipsis,  // Если текста больше, добавляется многоточие
                   ),
                 ),
               ),
@@ -254,6 +255,7 @@ class _LikeWindowState extends State<LikeWindow> {
               ),
             ],
           )
+
 
 
         ],

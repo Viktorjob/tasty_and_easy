@@ -362,16 +362,21 @@ class _Page_receptState extends State<Page_recept> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Icon(Icons.access_time, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text(
-                          data!['time'],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                       // Center(child: Text(widget.dishName, style: TextStyle(color: Colors.white, fontSize: 15))),
+                        Row(
+                          children: [
+                            Icon(Icons.access_time, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              data!['time'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -385,6 +390,7 @@ class _Page_receptState extends State<Page_recept> {
                               toggleFavorite();
                             }
                           },
+
                           child: Opacity(
                             opacity: uid != null ? 1.0 : 0.3,
                             child: Icon(
@@ -394,6 +400,7 @@ class _Page_receptState extends State<Page_recept> {
                           ),
                         ),
                         Text('Likes: $likesCount', style: TextStyle(color: Colors.white)),
+
                       ],
                     ),
                   ),

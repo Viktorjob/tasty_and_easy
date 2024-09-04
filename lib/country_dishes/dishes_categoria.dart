@@ -28,7 +28,8 @@ class _country_dish extends State<country_dish> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF0B0E12) , // Здесь установите желаемый цвет для AppBar
-        title: Text(widget.country_dish_name),
+        title: Text(widget.country_dish_name, style: const TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
       backgroundColor: Color(0xFF0B0E12),
