@@ -2,7 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:tasty_and_easy/window_details_recept/Page_recept.dart';
 import 'package:tasty_and_easy/window_details_recept/filtrs_window.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:tasty_and_easy/window_menu/home_window.dart';
 
 class ListDishes extends StatefulWidget {
   final String dishKey;
@@ -21,11 +21,13 @@ class _ListDishesState extends State<ListDishes> {
   bool vegetarian = false;
   bool vegan = false;
   bool halal = false;
-  String searchQuery = '';
+  String SSS = '';
   bool isSearching = false;
   TextEditingController searchController = TextEditingController();
 
-  _ListDishesState(this.dishKey);
+  _ListDishesState(this.dishKey) {
+    SSS = dishKey;
+  }
 
   @override
   void initState() {
@@ -33,53 +35,41 @@ class _ListDishesState extends State<ListDishes> {
     dbRef = FirebaseDatabase.instance.reference().child(dishKey);
   }
 
-  void _applyFilters(String text) {
-    if (!mounted) return; // Проверка, что виджет все еще в дереве
-    setState(() {
-      searchQuery = text.toLowerCase();
-    });
-  }
-
-  @override
-  void dispose() {
-    // Очистка контроллера и освобождение ресурсов
-    searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0B0E12),
+      backgroundColor: Color(0xFF0B0E12),
       appBar: AppBar(
         title: isSearching
             ? TextField(
           controller: searchController,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          style: TextStyle(color: Colors.white), // Задаем цвет текста ввода
+          decoration: InputDecoration(
             hintText: 'Search...',
             hintStyle: TextStyle(color: Colors.white),
           ),
-          onChanged: _applyFilters,
+          onChanged: (text) {
+            // Handle search text changes
+            setState(() {});
+          },
         )
-            : Text(dishKey, style: const TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF120B0E),
+            : Text(dishKey,style: TextStyle(color: Colors.white),),
+
+        backgroundColor: Color(0xFF120B0E),
         actions: <Widget>[
           IconButton(
             icon: Icon(isSearching ? Icons.cancel : Icons.search),
             onPressed: () {
-              if (!mounted) return; // Проверка, что виджет все еще в дереве
               setState(() {
                 isSearching = !isSearching;
                 if (!isSearching) {
                   searchController.clear();
-                  _applyFilters('');
                 }
               });
             },
           ),
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: Icon(Icons.filter_list),
             onPressed: () {
               filtersDetailsWindow(
                 context,
@@ -88,13 +78,12 @@ class _ListDishesState extends State<ListDishes> {
                 vegetarian,
                 vegan,
                 halal,
-                    (gluten, lactose, veg, vegan, halalDish) {
-                  if (!mounted) return; // Проверка, что виджет все еще в дереве
+                    (gluten, lactose, veg, vegan, halal_dish) {
                   setState(() {
                     glutenFree = gluten;
                     lactoseFree = lactose;
                     vegetarian = veg;
-                    halal = halalDish;
+                    halal = halal_dish;
                     this.vegan = vegan;
                   });
                 },
@@ -102,57 +91,51 @@ class _ListDishesState extends State<ListDishes> {
             },
           ),
         ],
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white),// для всех иконок
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return CircularProgressIndicator();
           }
-
-          if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          }
-
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
-            Map<String, dynamic> dishes = Map<String, dynamic>.from(
-              (snapshot.data!.snapshot.value as Map).cast<String, dynamic>(),
-            );
+            Map<String, dynamic> users =
+            Map<String, dynamic>.from((snapshot.data!.snapshot.value as Map).cast<String, dynamic>());
 
-            final filteredDishes = dishes.values.where((dish) {
+            final filteredDishes = users.values.where((dish) {
+              // Filter based on search text and filters
               String dishName = dish['name'].toString().toLowerCase();
-              return (!glutenFree || dish['Gluten'] == true) &&
-                  (!lactoseFree || dish['Lactose'] == true) &&
-                  (!vegetarian || dish['Vegetarian'] == true) &&
-                  (!vegan || dish['Vegan'] == true) &&
-                  (!halal || dish['Halal'] == true) &&
-                  (dishName.contains(searchQuery));
+              String searchText = searchController.text.toLowerCase();
+              return (!glutenFree || dish['Gluten'] == glutenFree) &&
+                  (!lactoseFree || dish['Lactose'] == lactoseFree) &&
+                  (!vegetarian || dish['Vegetarian'] == vegetarian) &&
+                  (!vegan || dish['Vegan'] == vegan) &&
+                  (!halal || dish['Halal'] == halal) &&
+                  (dishName.contains(searchText));
             }).toList();
 
-            if (filteredDishes.isEmpty) {
-              return const Center(child: Text("No dishes match the selected criteria"));
-            }
-
             return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1,
+                crossAxisSpacing: 0.0,
+                mainAxisSpacing: 0.0,
                 childAspectRatio: 5 / 3,
               ),
               itemCount: filteredDishes.length,
               itemBuilder: (BuildContext context, int index) {
-                final dish = filteredDishes[index];
+                final user1 = filteredDishes[index];
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListItem(
-                    dish: dish,
-                    dishKey: dishKey,
+                    user1: user1,
+                    SSS: SSS,
                   ),
                 );
               },
             );
           } else {
-            return const Center(child: Text("No data available"));
+            return Text("Data is null");
           }
         },
       ),
@@ -160,33 +143,34 @@ class _ListDishesState extends State<ListDishes> {
   }
 }
 
-class ListItem extends StatelessWidget {
-  final Map dish;
-  final String dishKey;
+// The rest of your ListItem and other code remains unchanged.
 
-  const ListItem({required this.dish, required this.dishKey});
+
+class ListItem extends StatelessWidget {
+  final Map user1;
+  final String SSS;
+
+  ListItem({required this.user1,required this.SSS});
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
+
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => Page_recept(
-              dishName: dish['name'],
-              dishtime: dish['time'],
-              SSS: dishKey,
-            ),
+            builder: (context) => Page_recept(dishName: user1['name'],dishtime: user1['time'], SSS: SSS ),
           ),
         );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20), // Задаем общий радиус для всех углов
           child: Container(
-            decoration: const BoxDecoration(
-              boxShadow: [
+            decoration: BoxDecoration(
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
                   offset: Offset(2, 2),
@@ -201,79 +185,81 @@ class ListItem extends StatelessWidget {
                   padding: const EdgeInsets.all(4.0),
                   decoration: BoxDecoration(
                     color: Colors.amber,
-                    borderRadius: BorderRadius.circular(20),
-
+                    borderRadius: BorderRadius.circular(20), // Закругленные углы
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(2, 2),
+                        blurRadius: 10,
+                      ),
+                    ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20), // Закругленные углы для изображения
                     child: Image.network(
-                      dish['image_url'].toString(),
+                      user1['image_url'].toString(),
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
                     ),
                   ),
                 ),
+
+
                 Positioned(
                   bottom: 0,
-                  right:0,
                   child: Container(
-
-                    width: MediaQuery.of(context).size.width*0.92,
+                    width: MediaQuery.of(context).size.width,
                     color: Colors.black.withOpacity(0.6),
                     padding: const EdgeInsets.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AutoSizeText(
-                          dish['name'] ?? '',
-                          style: const TextStyle(
+                        Text(
+                          user1['name'] != null ? user1['name'] : '',
+                          style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
+                            fontSize: 18,
                           ),
-                          maxLines: 3,
-                          minFontSize: 5,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.bookmark_border,
-                              color: Colors.white,
-                              size: 15,
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.bookmark_border, // Иконка сердца
+                                  color: Colors.white,
+                                  size: 15,
+                                ),
+                                SizedBox(width: 10), // Расстояние между иконкой и текстом
+                                Text(
+                                  '${user1['number_of_likes']}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  Icons.access_time, // Иконка сердца
+                                  color: Colors.white,
+                                  size: 15,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '${user1['time']}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            Text(
-                              '${dish['number_of_likes']}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            const Icon(
-                              Icons.access_time,
-                              color: Colors.white,
-                              size: 15,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${dish['time']}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
+
+
                       ],
                     ),
                   ),
                 ),
-
-
               ],
             ),
           ),
@@ -282,3 +268,4 @@ class ListItem extends StatelessWidget {
     );
   }
 }
+
