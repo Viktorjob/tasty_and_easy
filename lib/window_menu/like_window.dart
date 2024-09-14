@@ -223,8 +223,8 @@ class _LikeWindowState extends State<LikeWindow> {
                         ),
                       ),
                       Icon(
-                        Icons.favorite,
-                        color: Colors.red,
+                        Icons.bookmark_border,
+                        color: Colors.white,
                         size: 24.0,
                       ),
                       SizedBox(width: 5),

@@ -226,7 +226,7 @@ class ListItem extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.bookmark_border, // Иконка сердца
+                                  Icons.bookmark_border,
                                   color: Colors.white,
                                   size: 15,
                                 ),
