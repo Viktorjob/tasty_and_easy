@@ -394,7 +394,7 @@ class _Page_receptState extends State<Page_recept> {
                           child: Opacity(
                             opacity: uid != null ? 1.0 : 0.3,
                             child: Icon(
-                              isFavorite ? Icons.favorite : Icons.favorite_outline,
+                              isFavorite ? Icons.bookmark_outlined : Icons.bookmark_border,
                               color: isFavorite ? Colors.amber : Colors.grey,
                             ),
                           ),
