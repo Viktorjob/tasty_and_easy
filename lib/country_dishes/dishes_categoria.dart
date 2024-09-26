@@ -17,10 +17,10 @@ class _country_dish extends State<country_dish> {
   @override
   void initState() {
     super.initState();
-    // Инициализируем dbRef внутри initState
-    dbRef = FirebaseDatabase.instance.reference().child(widget.country_dish_name);
+    // Инициализируем dbRef внутри initStatez
+    dbRef = FirebaseDatabase.instance.reference().child('Country_categorise_dishes/${widget.country_dish_name}');
     print('++++++++++++++');
-    print(widget.country_dish_name); // Выводим country_dish_name в консоль при инициализации
+    print('Country_categorise_dishes/${widget.country_dish_name}'); // Выводим country_dish_name в консоль при инициализации
   }
   @override
   Widget build(BuildContext context) {
@@ -72,6 +72,9 @@ class _country_dish extends State<country_dish> {
   Widget listItem({required Map user}) {
 
     String? category = user['name'];
+    print('++++++++++++++');
+    print(user['name']);
+    print('++++++++++++++');
 
     return InkWell(
       onTap: () {
@@ -107,7 +110,7 @@ class _country_dish extends State<country_dish> {
             fit: StackFit.expand,
             children: [
               Image.network(
-                user['image'].toString(),
+                user['image_url'].toString(),
                 fit: BoxFit.cover,
               ),
               Container(

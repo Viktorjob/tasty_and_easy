@@ -108,7 +108,16 @@ class _LikeWindowState extends State<LikeWindow> {
     }).catchError((error) {
       print('Failed to delete data: $error');
     });
+
+    // Удаление данных о блюде из общего списка в Firebase (если необходимо)
+    DatabaseReference dishRef = FirebaseDatabase.instance.reference().child('Dishes/$key');
+    dishRef.remove().then((_) {
+      print('Dish data deleted from Dishes successfully');
+    }).catchError((error) {
+      print('Failed to delete dish data: $error');
+    });
   }
+
 
 
   Widget listItem({required Map user, required String itemKey}) {
@@ -131,7 +140,7 @@ class _LikeWindowState extends State<LikeWindow> {
               builder: (context) => Page_recept(
                 dishName: dishName ?? '',
                 dishtime: dishtime ?? '',
-                SSS: '',
+                SSS: 'Dishes',
               ),
             ),
           );

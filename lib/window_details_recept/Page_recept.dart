@@ -29,7 +29,7 @@ class _Page_receptState extends State<Page_recept> {
   void initState() {
     super.initState();
 
-    dbRef = FirebaseDatabase.instance.reference().child('${widget.dishName}');
+    dbRef = FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}');
     loadLikedKeys();
     loadIsFavorite();
     loadLikesCount();
@@ -94,8 +94,8 @@ class _Page_receptState extends State<Page_recept> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     likesCount = prefs.getInt('${widget.dishName}_likes') ?? 0;
 
-    DatabaseReference likesRef =
-    FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
+    // Обновленный путь для получения количества лайков блюда
+    DatabaseReference likesRef = FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}/number_of_likes');
 
     likesRef.onValue.listen((event) {
       if (event.snapshot.value != null) {
@@ -105,6 +105,7 @@ class _Page_receptState extends State<Page_recept> {
       }
     });
   }
+
 
   void saveIsFavorite(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -129,17 +130,18 @@ class _Page_receptState extends State<Page_recept> {
     });
     saveIsFavorite(isFavorite);
 
-    DatabaseReference likesRef =
-    FirebaseDatabase.instance.reference().child('${widget.SSS}/${widget.dishName}/number_of_likes');
+    // Обновленный путь для изменения количества лайков блюда
+    DatabaseReference likesRef = FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}/number_of_likes');
     await likesRef.set(likesCount);
 
-    DatabaseReference likeListRef =
-    FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+    // Обновленный путь к списку лайков пользователя
+    DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
 
     if (isFavorite && data != null) {
       DatabaseReference newLikeRef = likeListRef.push();
       newLikeKey = newLikeRef.key!;
 
+      // Сохраняем информацию о блюде в списке избранного пользователя
       await newLikeRef.set({
         'name': widget.dishName,
         'image_url': data!['image_url'],
@@ -149,13 +151,13 @@ class _Page_receptState extends State<Page_recept> {
 
       print('Сгенерированный ключ для нового элемента: $newLikeKey');
     } else {
-      // ожидайте выполнения операции удаления
+      // Удаление блюда из списка избранного
       await likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
         final snapshot = event.snapshot;
         Map<dynamic, dynamic>? values = snapshot.value as Map?;
         if (values != null) {
           values.forEach((key, value) {
-            likeListRef.child(key).remove();
+            likeListRef.child(key).remove(); // Удаляем элемент по ключу
           });
         }
       });
@@ -166,6 +168,7 @@ class _Page_receptState extends State<Page_recept> {
     });
     saveLikedKeys();
   }
+
 
 
 
@@ -364,7 +367,7 @@ class _Page_receptState extends State<Page_recept> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
-                       // Center(child: Text(widget.dishName, style: TextStyle(color: Colors.white, fontSize: 15))),
+                        // Center(child: Text(widget.dishName, style: TextStyle(color: Colors.white, fontSize: 15))),
                         Row(
                           children: [
                             Icon(Icons.access_time, color: Colors.white),
@@ -394,7 +397,7 @@ class _Page_receptState extends State<Page_recept> {
                           child: Opacity(
                             opacity: uid != null ? 1.0 : 0.3,
                             child: Icon(
-                              isFavorite ? Icons.bookmark_outlined : Icons.bookmark_border,
+                              isFavorite ? Icons.favorite : Icons.favorite_outline,
                               color: isFavorite ? Colors.amber : Colors.grey,
                             ),
                           ),
