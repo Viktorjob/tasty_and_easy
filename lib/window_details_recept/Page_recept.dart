@@ -1,8 +1,12 @@
 import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart' as database; // Используйте префикс
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore; // Используйте префикс
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tasty_and_easy/window_details_recept/commends_window.dart';
 
 class Page_recept extends StatefulWidget {
   final String dishName;
@@ -15,7 +19,7 @@ class Page_recept extends StatefulWidget {
 }
 
 class _Page_receptState extends State<Page_recept> {
-  Query? dbRef;
+  database.Query? dbRef;
   bool isFavorite = false;
   int likesCount = 0;
   Map<String, dynamic>? data;
@@ -23,16 +27,18 @@ class _Page_receptState extends State<Page_recept> {
   bool showScrollIcon = true;
   List<String> likedKeys = [];
   String newLikeKey = "";
+  String? userName;
 
   @override
 
   void initState() {
     super.initState();
 
-    dbRef = FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}');
+    dbRef = database.FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}');
     loadLikedKeys();
     loadIsFavorite();
     loadLikesCount();
+    getUserName();
   }
 
 
@@ -46,7 +52,7 @@ class _Page_receptState extends State<Page_recept> {
   }
 
   void loadLikedKeys() async {
-    DatabaseReference likedKeysRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
+    database.DatabaseReference likedKeysRef = database.FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
     likedKeysRef.once().then((event) {
       if (event.snapshot.value != null) {
         Map<dynamic, dynamic>? updatedKeys = event.snapshot.value as Map?;
@@ -78,11 +84,6 @@ class _Page_receptState extends State<Page_recept> {
       }
     });
   }
-
-
-
-
-
 
   void saveLikedKeys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -314,6 +315,18 @@ class _Page_receptState extends State<Page_recept> {
     }
   }
 
+  // Добавьте это после определения переменных в _Page_receptState
+  Future<String?> getUserName() async {
+    if (uid != null) {
+      firestore.DocumentSnapshot userDoc = await firestore.FirebaseFirestore.instance.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        String userName = userDoc.get('name');
+        print("Имя пользователя: $userName"); // Выводим имя в консоль
+        return userName;
+      }
+    }
+    return null;
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -379,7 +392,41 @@ class _Page_receptState extends State<Page_recept> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            Spacer(),
+                            IconButton(
+                              icon: Icon(Icons.comment, color: Colors.amber),
+                              onPressed: () async {
+                                // Используйте dishName как уникальный идентификатор блюда
+                                String dishId = widget.dishName; // Здесь вы используете dishName как идентификатор
+                                print('***********8');
+
+                                // Ждем загрузки имени пользователя
+                                String? loadedUserName = await getUserName();
+
+                                if (loadedUserName != null) {
+                                  Comments_window(context, dishId, loadedUserName); // Передаем dishId и userName
+                                } else {
+                                  print("Имя пользователя еще не загружено.");
+                                }
+                              },
+                            ),
+
+
                           ],
+
+                        ),
+                        FutureBuilder<String?>(
+                          future: getUserName(),
+                          builder: (context, AsyncSnapshot<String?> userNameSnapshot) {
+                            if (userNameSnapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else if (userNameSnapshot.hasError) {
+                              return Text("Ошибка загрузки имени", style: TextStyle(color: Colors.red));
+                            }
+
+                              return SizedBox.shrink(); // Если имени нет, ничего не отображать
+                            }
+
                         ),
                       ],
                     ),

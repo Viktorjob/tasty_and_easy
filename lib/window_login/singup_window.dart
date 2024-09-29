@@ -26,7 +26,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     emailTextInputController.dispose();
     passwordTextInputController.dispose();
     passwordTextRepeatInputController.dispose();
-   // nameTextInputController.dispose();
+    nameTextInputController.dispose();
 
     super.dispose();
   }

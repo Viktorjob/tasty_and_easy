@@ -17,6 +17,7 @@ class _AccountScreenState extends State<Accountwindow> {
   final user = FirebaseAuth.instance.currentUser;
   String? uid = FirebaseAuth.instance.currentUser?.uid;
 
+
   Future<void> signOut() async {
     final navigator = Navigator.of(context);
 
@@ -50,6 +51,9 @@ class _AccountScreenState extends State<Accountwindow> {
                   } else {
                     if (snapshot.hasData && snapshot.data!.exists) {
                       String userName = snapshot.data!.get('name');
+                      print('User Name: $userName');
+
+
                       return Text('Привет, $userName!', style: TextStyle(color: Colors.white));
                     } else {
                       return Text('Привет!', style: TextStyle(color: Colors.white));
