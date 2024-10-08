@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart' as database; // Исп
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore; // Используйте префикс
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasty_and_easy/window_details_recept/commends_window.dart';
+import 'package:tasty_and_easy/window_details_recept/rating.dart';
 
 class Page_recept extends StatefulWidget {
   final String dishName;
@@ -28,7 +29,8 @@ class _Page_receptState extends State<Page_recept> {
   List<String> likedKeys = [];
   String newLikeKey = "";
   String? userName;
-
+  double averageRating = 0.0;
+  double userRating = 0.0;
   @override
 
   void initState() {
@@ -39,7 +41,100 @@ class _Page_receptState extends State<Page_recept> {
     loadIsFavorite();
     loadLikesCount();
     getUserName();
+    loadRatings();
   }
+  void updateRating(double newRating) async {
+    if (uid != null) {
+      // Сохраняем рейтинг пользователя
+      DatabaseReference userRatingRef = FirebaseDatabase.instance
+          .reference()
+          .child('Dishes/${widget.dishName}/ratings/$uid');
+
+      await userRatingRef.set(newRating).catchError((error) {
+        print('Ошибка сохранения рейтинга пользователя: $error');
+      });
+
+      // Получаем все рейтинги, чтобы рассчитать среднее значение
+      DatabaseReference ratingsRef = FirebaseDatabase.instance
+          .reference()
+          .child('Dishes/${widget.dishName}/ratings');
+
+      ratingsRef.once().then((event) {
+        if (event.snapshot.value != null) {
+          Map<dynamic, dynamic> ratings = event.snapshot.value as Map<dynamic, dynamic>;
+          double totalRating = 0.0;
+          int count = 0;
+
+          ratings.forEach((key, value) {
+            // Используем num, чтобы обработать как int, так и double
+            totalRating += (value as num).toDouble();
+            count++;
+          });
+
+          // Рассчитываем и сохраняем средний рейтинг
+          double average = totalRating / count;
+
+          DatabaseReference averageRatingRef = FirebaseDatabase.instance
+              .reference()
+              .child('Dishes/${widget.dishName}/average_rating');
+          averageRatingRef.set(average).catchError((error) {
+            print('Ошибка сохранения среднего рейтинга: $error');
+          });
+
+          setState(() {
+            averageRating = average;
+            print('Средний рейтинг обновлен: $average');
+          });
+        } else {
+          print('Нет рейтингов для расчета среднего');
+        }
+      }).catchError((error) {
+        print('Ошибка получения рейтингов: $error');
+      });
+    }
+  }
+
+
+  void loadRatings() async {
+    if (uid != null) {
+      // Получаем текущую оценку пользователя
+      DatabaseReference userRatingRef = FirebaseDatabase.instance
+          .reference()
+          .child('Dishes/${widget.dishName}/ratings/$uid');
+
+      userRatingRef.once().then((event) {
+        if (event.snapshot.value != null) {
+          setState(() {
+            userRating = (event.snapshot.value as num?)?.toDouble() ?? 0.0;
+          });
+        } else {
+          print('Нет текущей оценки пользователя');
+        }
+      }).catchError((error) {
+        print('Ошибка загрузки текущей оценки: $error');
+      });
+
+      // Получаем средний рейтинг блюда
+      DatabaseReference averageRatingRef = FirebaseDatabase.instance
+          .reference()
+          .child('Dishes/${widget.dishName}/average_rating');
+
+      averageRatingRef.onValue.listen((event) {
+        if (event.snapshot.value != null) {
+          setState(() {
+            averageRating = (event.snapshot.value as num?)?.toDouble() ?? 0.0;
+          });
+        } else {
+          print('Нет среднего рейтинга');
+        }
+      }).onError((error) {
+        print('Ошибка загрузки среднего рейтинга: $error');
+      });
+    } else {
+      print('UID пользователя равен null');
+    }
+  }
+
 
 
 
@@ -415,6 +510,21 @@ class _Page_receptState extends State<Page_recept> {
                           ],
 
                         ),
+                        Column(
+                          children: [
+                            StarRating(
+                              currentRating: userRating,
+                              onRatingChanged: (newRating) {
+                                updateRating(newRating);
+                              },
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Средняя оценка: ${averageRating.toStringAsFixed(1)}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ) ,
                         FutureBuilder<String?>(
                           future: getUserName(),
                           builder: (context, AsyncSnapshot<String?> userNameSnapshot) {
