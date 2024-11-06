@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color(0xFF0B0E12), // Цвет AppBar
-        title: const Text('Войти', style: TextStyle(color: Colors.white)), // Цвет текста AppBar
+        title: const Text('Login', style: TextStyle(color: Colors.white)), // Цвет текста AppBar
       ),
       backgroundColor: Color(0xFF0B0E12), // Цвет фона Scaffold
       body: Padding(
@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: login,
-                child: const Center(child: Text('Войти')),
+                child: const Center(child: Text('Login')),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.amber, // Цвет кнопки
                 ),

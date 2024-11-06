@@ -98,18 +98,42 @@ class _LikeWindowState extends State<LikeWindow> {
       ),
     );
   }
+  void deleteData(String key, String dishName) {
+    print('Deleting dish: $dishName'); // Печатаем название блюда перед удалением
 
-  void deleteData(String key) {
+    // Запрос на уменьшение количества лайков
+    DatabaseReference likesRef = FirebaseDatabase.instance.reference().child('Dishes/$dishName/number_of_likes');
+
+    // Получаем текущее количество лайков
+    likesRef.get().then((DataSnapshot snapshot) {
+      if (snapshot.exists) {
+        int currentLikes = snapshot.value as int; // Получаем текущее количество лайков
+        if (currentLikes > 0) { // Проверяем, чтобы не стало отрицательным
+          likesRef.set(currentLikes - 1).then((_) {
+            print('Likes updated successfully: ${currentLikes - 1}');
+          }).catchError((error) {
+            print('Failed to update likes: $error');
+          });
+        }
+      }
+    }).catchError((error) {
+      print('Failed to get likes: $error');
+    });
+
+    // Удаление записи из списка пользовательских лайков
     userLikeListRef.child(key).remove().then((_) {
       print('Data deleted successfully');
-      setState(() {
-        likedItems.remove(key);
-      });
+      // Проверка на mounted перед вызовом setState
+      if (mounted) {
+        setState(() {
+          likedItems.remove(key);
+        });
+      }
     }).catchError((error) {
       print('Failed to delete data: $error');
     });
 
-    // Удаление данных о блюде из общего списка в Firebase (если необходимо)
+    // Удаление данных о блюде из общего списка в Firebase
     DatabaseReference dishRef = FirebaseDatabase.instance.reference().child('Dishes/$key');
     dishRef.remove().then((_) {
       print('Dish data deleted from Dishes successfully');
@@ -117,6 +141,7 @@ class _LikeWindowState extends State<LikeWindow> {
       print('Failed to delete dish data: $error');
     });
   }
+
 
 
 
@@ -247,7 +272,7 @@ class _LikeWindowState extends State<LikeWindow> {
                       SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
-                          deleteData(itemKey);
+                          deleteData(itemKey, dishName ?? 'Unknown Dish');
                         },
                         child: Container(
                           width: 40,

@@ -229,7 +229,7 @@ class _SignUpScreen extends State<SignUpScreen> {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text(
-                  'Войти',
+                  'Login',
                   style: TextStyle(
                     color: Colors.white,
                     decoration: TextDecoration.underline,

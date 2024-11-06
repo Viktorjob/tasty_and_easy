@@ -274,7 +274,8 @@ class _Page_receptState extends State<Page_recept> {
     print(likedKeys);
     print('------');
     print(widget.dishName);
-
+    print('++++++');
+    print(widget.SSS);
 
     for (int i = 1; i <= 13; i++) {
       String ingredientKey = 'ingredient_$i';
@@ -520,7 +521,7 @@ class _Page_receptState extends State<Page_recept> {
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'Средняя оценка: ${averageRating.toStringAsFixed(1)}',
+                              'Average rating: ${averageRating.toStringAsFixed(1)}',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],

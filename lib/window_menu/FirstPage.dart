@@ -238,7 +238,7 @@ class _FirstPageState extends State<FirstPage> {
                           Padding(
                             padding: const EdgeInsets.only(top : 10.0),
                             child: Text(
-                              "Best Dishes",
+                              "Best Dishe",
                               style: TextStyle(
                                 fontSize: 23,
                                 fontWeight: FontWeight.bold,
