@@ -46,7 +46,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                   SizedBox(height: 12),
 
                   Text(
-                    "Комментарии",
+                    "Commends",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                             },
                           );
                         } else {
-                          return Center(child: Text("Нет комментариев"));
+                          return Center(child: Text("No commends"));
                         }
                       },
                     ),
@@ -85,7 +85,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
 
                     controller: commentController,
                     decoration: InputDecoration(
-                      hintText: "Напишите комментарий...",
+                      hintText: "Write a comment...",
                       border: OutlineInputBorder(),
                     ),
                     onTap: () {
@@ -123,7 +123,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                                     ),
                                     SizedBox(height: 12),
                                     Text(
-                                      "Комментарии",
+                                      "Commends",
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
@@ -152,7 +152,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                                               },
                                             );
                                           } else {
-                                            return Center(child: Text("Нет комментариев"));
+                                            return Center(child: Text("No commedns"));
                                           }
                                         },
                                       ),
@@ -161,7 +161,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                                     TextField(
                                       controller: commentController,
                                       decoration: InputDecoration(
-                                        hintText: "Напишите комментарий...",
+                                        hintText: "Write a comment...",
                                         border: OutlineInputBorder(),
                                       ),
                                     ),
