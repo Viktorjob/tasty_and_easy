@@ -1,5 +1,3 @@
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:tasty_and_easy/services_firebase/file_snack.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,14 +13,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isHiddenPassword = true;
   TextEditingController emailTextInputController = TextEditingController();
   TextEditingController passwordTextInputController = TextEditingController();
-  TextEditingController nameTextInputController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   @override
   void dispose() {
     emailTextInputController.dispose();
     passwordTextInputController.dispose();
-
     super.dispose();
   }
 
@@ -34,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> login() async {
     final navigator = Navigator.of(context);
-
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
@@ -47,17 +43,19 @@ class _LoginScreenState extends State<LoginScreen> {
       print(e.code);
 
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        SnackBarService.showSnackBar(
-          context,
-          'Неправильный email или пароль. Повторите попытку',
-          true,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Incorrect email or password. Try again'),
+            backgroundColor: Colors.red,
+          ),
         );
         return;
       } else {
-        SnackBarService.showSnackBar(
-          context,
-          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
-          true,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Unknown error! Try again or contact support.'),
+            backgroundColor: Colors.red,
+          ),
         );
         return;
       }
@@ -66,16 +64,15 @@ class _LoginScreenState extends State<LoginScreen> {
     navigator.pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Color(0xFF0B0E12), // Цвет AppBar
-        title: const Text('Login', style: TextStyle(color: Colors.white)), // Цвет текста AppBar
+        backgroundColor: Color(0xFF0B0E12),
+        title: const Text('Login', style: TextStyle(color: Colors.white)),
       ),
-      backgroundColor: Color(0xFF0B0E12), // Цвет фона Scaffold
+      backgroundColor: Color(0xFF0B0E12),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
@@ -88,20 +85,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: emailTextInputController,
                 validator: (email) =>
                 email != null && !EmailValidator.validate(email)
-                    ? 'Введите правильный Email'
+                    ? 'Enter the correct Email'
                     : null,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
-                  hintText: 'Введите Email',
-                  hintStyle: TextStyle(color: Colors.white), // Цвет подсказки
+                  hintText: 'Enter Email',
+                  hintStyle: TextStyle(color: Colors.white),
                 ),
-                style: TextStyle(color: Colors.white), // Цвет текста
+                style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 30),
               TextFormField(
@@ -109,56 +106,47 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: passwordTextInputController,
                 obscureText: isHiddenPassword,
                 validator: (value) => value != null && value.length < 6
-                    ? 'Минимум 6 символов'
+                    ? 'Minimum 6 characters'
                     : null,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   border: const OutlineInputBorder(),
-                  hintText: 'Введите пароль',
-                  hintStyle: TextStyle(color: Colors.white), // Цвет подсказки
+                  hintText: 'Enter your password',
+                  hintStyle: TextStyle(color: Colors.white),
                   suffix: InkWell(
                     onTap: togglePasswordView,
                     child: Icon(
                       isHiddenPassword
                           ? Icons.visibility_off
                           : Icons.visibility,
-                      color: Colors.white, // Цвет иконки
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                style: TextStyle(color: Colors.white), // Цвет текста
+                style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: login,
                 child: const Center(child: Text('Login')),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber, // Цвет кнопки
-                ),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () => _signInWithGoogle(),
-
-                child: const Center(child: Text('Google')),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red, // Цвет кнопки
+                  backgroundColor: Colors.amber,
                 ),
               ),
               const SizedBox(height: 30),
               TextButton(
                 onPressed: () => Navigator.of(context).pushNamed('/signup'),
                 child: const Text(
-                  'Регистрация',
+                  'Registration',
                   style: TextStyle(
                     decoration: TextDecoration.underline,
-                    color: Colors.white, // Цвет текста
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -166,8 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () =>
                     Navigator.of(context).pushNamed('/reset_password'),
                 child: const Text(
-                  'Сбросить пароль',
-                  style: TextStyle(color: Colors.white), // Цвет текста
+                  'Reset password',
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -176,30 +164,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  _signInWithGoogle()async{
-
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-    await _googleSignIn.signOut();
-    try {
-
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-
-      if(googleSignInAccount != null ){
-        final GoogleSignInAuthentication googleSignInAuthentication = await
-        googleSignInAccount.authentication;
-
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken,
-        );
-
-       await _firebaseAuth.signInWithCredential(credential);
-        Navigator.pushNamed(context, "/home");
-      }
-    }catch(e) {
-      print('Error');
-    }
-
-  }
-
 }

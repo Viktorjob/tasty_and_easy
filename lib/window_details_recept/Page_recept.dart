@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart' as database; // Используйте префикс
-import 'package:cloud_firestore/cloud_firestore.dart' as firestore; // Используйте префикс
+import 'package:firebase_database/firebase_database.dart' as database;
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasty_and_easy/window_details_recept/commends_window.dart';
 import 'package:tasty_and_easy/window_details_recept/rating.dart';
@@ -45,16 +45,16 @@ class _Page_receptState extends State<Page_recept> {
   }
   void updateRating(double newRating) async {
     if (uid != null) {
-      // Сохраняем рейтинг пользователя
+      // Save user rating
       DatabaseReference userRatingRef = FirebaseDatabase.instance
           .reference()
           .child('Dishes/${widget.dishName}/ratings/$uid');
 
       await userRatingRef.set(newRating).catchError((error) {
-        print('Ошибка сохранения рейтинга пользователя: $error');
+        print('Error saving user rating: $error');
       });
 
-      // Получаем все рейтинги, чтобы рассчитать среднее значение
+      // Get all ratings to calculate the average value
       DatabaseReference ratingsRef = FirebaseDatabase.instance
           .reference()
           .child('Dishes/${widget.dishName}/ratings');
@@ -66,38 +66,54 @@ class _Page_receptState extends State<Page_recept> {
           int count = 0;
 
           ratings.forEach((key, value) {
-            // Используем num, чтобы обработать как int, так и double
+            // Use num to handle both int and double
             totalRating += (value as num).toDouble();
             count++;
           });
-
-          // Рассчитываем и сохраняем средний рейтинг
+          // Calculate and save the average rating
           double average = totalRating / count;
 
           DatabaseReference averageRatingRef = FirebaseDatabase.instance
               .reference()
               .child('Dishes/${widget.dishName}/average_rating');
           averageRatingRef.set(average).catchError((error) {
-            print('Ошибка сохранения среднего рейтинга: $error');
+            print('Error saving average rating: $error');
           });
 
           setState(() {
             averageRating = average;
-            print('Средний рейтинг обновлен: $average');
+            print('The average rating has been updated: $average');
           });
         } else {
-          print('Нет рейтингов для расчета среднего');
+          print('There are no ratings to calculate the average');
         }
       }).catchError((error) {
-        print('Ошибка получения рейтингов: $error');
+        print('Error receiving ratings: $error');
       });
     }
   }
 
 
   void loadRatings() async {
+    // Get the average rating of the dish
+    DatabaseReference averageRatingRef = FirebaseDatabase.instance
+        .reference()
+        .child('Dishes/${widget.dishName}/average_rating');
+
+    averageRatingRef.onValue.listen((event) {
+      if (event.snapshot.value != null) {
+        setState(() {
+          averageRating = (event.snapshot.value as num?)?.toDouble() ?? 0.0;
+        });
+      } else {
+        print('There is no average rating.');
+      }
+    }).onError((error) {
+      print('Error loading the average rating: $error');
+    });
+
+    // If the user is authorized, load the user's score
     if (uid != null) {
-      // Получаем текущую оценку пользователя
       DatabaseReference userRatingRef = FirebaseDatabase.instance
           .reference()
           .child('Dishes/${widget.dishName}/ratings/$uid');
@@ -108,35 +124,13 @@ class _Page_receptState extends State<Page_recept> {
             userRating = (event.snapshot.value as num?)?.toDouble() ?? 0.0;
           });
         } else {
-          print('Нет текущей оценки пользователя');
+          print('No current user rating');
         }
       }).catchError((error) {
-        print('Ошибка загрузки текущей оценки: $error');
+        print('Error loading the current grade: $error');
       });
-
-      // Получаем средний рейтинг блюда
-      DatabaseReference averageRatingRef = FirebaseDatabase.instance
-          .reference()
-          .child('Dishes/${widget.dishName}/average_rating');
-
-      averageRatingRef.onValue.listen((event) {
-        if (event.snapshot.value != null) {
-          setState(() {
-            averageRating = (event.snapshot.value as num?)?.toDouble() ?? 0.0;
-          });
-        } else {
-          print('Нет среднего рейтинга');
-        }
-      }).onError((error) {
-        print('Ошибка загрузки среднего рейтинга: $error');
-      });
-    } else {
-      print('UID пользователя равен null');
     }
   }
-
-
-
 
   void loadIsFavorite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -163,18 +157,18 @@ class _Page_receptState extends State<Page_recept> {
 
         setState(() {
           likedKeys = keysList;
-          // Проверка наличия блюда в списке likedKeys
+          // Check if the dish is in the list of likedKeys
           isFavorite = likedKeys.any((key) => updatedKeys?[key]?['name'] == widget.dishName);
         });
 
-        // Вывести названия блюд для каждого ключа
+        // Print the names of dishes for each key
         likedKeys.forEach((key) {
           print('Dish Name: ${updatedKeys?[key]?['name']}');
         });
       } else {
         setState(() {
           likedKeys = [];
-          isFavorite = false; // Если список пуст, блюда нет в избранном
+          isFavorite = false;// If the list is empty, the dish is not in favorites
         });
       }
     });
@@ -182,7 +176,6 @@ class _Page_receptState extends State<Page_recept> {
 
   void saveLikedKeys() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('sfsdfsfsd');
     prefs.setStringList('likedKeys', likedKeys);
   }
 
@@ -190,7 +183,7 @@ class _Page_receptState extends State<Page_recept> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     likesCount = prefs.getInt('${widget.dishName}_likes') ?? 0;
 
-    // Обновленный путь для получения количества лайков блюда
+    // Updated path to get the number of likes of the dish
     DatabaseReference likesRef = FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}/number_of_likes');
 
     likesRef.onValue.listen((event) {
@@ -226,18 +219,18 @@ class _Page_receptState extends State<Page_recept> {
     });
     saveIsFavorite(isFavorite);
 
-    // Обновленный путь для изменения количества лайков блюда
+    // Updated path to change the number of likes of a dish
     DatabaseReference likesRef = FirebaseDatabase.instance.reference().child('Dishes/${widget.dishName}/number_of_likes');
     await likesRef.set(likesCount);
 
-    // Обновленный путь к списку лайков пользователя
+    // Updated path to the user's list of likes
     DatabaseReference likeListRef = FirebaseDatabase.instance.reference().child('users').child(uid!).child('Like_list');
 
     if (isFavorite && data != null) {
       DatabaseReference newLikeRef = likeListRef.push();
       newLikeKey = newLikeRef.key!;
 
-      // Сохраняем информацию о блюде в списке избранного пользователя
+      // Save the dish information in the user's favorites list
       await newLikeRef.set({
         'name': widget.dishName,
         'image_url': data!['image_url'],
@@ -245,15 +238,15 @@ class _Page_receptState extends State<Page_recept> {
         'like': likesCount,
       });
 
-      print('Сгенерированный ключ для нового элемента: $newLikeKey');
+      print('Generated key for a new item: $newLikeKey');
     } else {
-      // Удаление блюда из списка избранного
+      // Deleting a dish from the favorites list
       await likeListRef.orderByChild('name').equalTo(widget.dishName).once().then((event) {
         final snapshot = event.snapshot;
         Map<dynamic, dynamic>? values = snapshot.value as Map?;
         if (values != null) {
           values.forEach((key, value) {
-            likeListRef.child(key).remove(); // Удаляем элемент по ключу
+            likeListRef.child(key).remove(); // Delete element by key
           });
         }
       });
@@ -270,13 +263,13 @@ class _Page_receptState extends State<Page_recept> {
 
   Widget _buildIngredientsBlock(Map<String, dynamic> data) {
     List<Widget> ingredientsWidgets = [];
-    print('++++++');
+    /*print('++++++');
     print(likedKeys);
     print('------');
     print(widget.dishName);
     print('++++++');
     print(widget.SSS);
-
+    */
     for (int i = 1; i <= 13; i++) {
       String ingredientKey = 'ingredient_$i';
       String quantityKey = 'quantity_$i';
@@ -298,8 +291,8 @@ class _Page_receptState extends State<Page_recept> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(imageBorderRadius),
               border: Border.all(
-                color: Colors.amber, // Цвет линии
-                width: 2.0, // Ширина линии
+                color: Colors.amber,
+                width: 2.0,
               ),
             ),
             child: ClipRRect(
@@ -346,8 +339,7 @@ class _Page_receptState extends State<Page_recept> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(imageBorderRadius),
-                    color: Colors.black.withOpacity(0.5), // Цвет затемненного фона
-                    // Добавьте другие свойства декорации по вашему усмотрению
+                    color: Colors.black.withOpacity(0.5),
                   ),
                   child: Center(
                     child: Image.asset(
@@ -410,14 +402,13 @@ class _Page_receptState extends State<Page_recept> {
       return SizedBox.shrink();
     }
   }
-
-  // Добавьте это после определения переменных в _Page_receptState
+  // Add this after defining the variables in _Page_receptState
   Future<String?> getUserName() async {
     if (uid != null) {
       firestore.DocumentSnapshot userDoc = await firestore.FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (userDoc.exists) {
         String userName = userDoc.get('name');
-        print("Имя пользователя: $userName"); // Выводим имя в консоль
+        print("Name user: $userName");
         return userName;
       }
     }
@@ -440,7 +431,7 @@ class _Page_receptState extends State<Page_recept> {
         title: Text(widget.dishName),
       ),
       body: FutureBuilder(
-        future: dbRef!.once(), // Загрузка данных один раз
+        future: dbRef!.once(),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
             data = Map<String, dynamic>.from(
@@ -492,21 +483,16 @@ class _Page_receptState extends State<Page_recept> {
                             IconButton(
                               icon: Icon(Icons.comment, color: Colors.amber),
                               onPressed: () async {
-                                // Используйте dishName как уникальный идентификатор блюда
-                                String dishId = widget.dishName; // Здесь вы используете dishName как идентификатор
+                                // Use dishName as a unique dish identifier
+                                String dishId = widget.dishName;// Here you use dishName as an identifier
                                 print('***********8');
 
-                                // Ждем загрузки имени пользователя
-                                String? loadedUserName = await getUserName();
+                                // Load username, if possible
+                                String? loadedUserName = uid != null ? await getUserName() : null;
 
-                                if (loadedUserName != null) {
-                                  Comments_window(context, dishId, loadedUserName); // Передаем dishId и userName
-                                } else {
-                                  print("Имя пользователя еще не загружено.");
-                                }
+                                Comments_window(context, dishId, loadedUserName ?? "Guest");
                               },
                             ),
-
 
                           ],
 
@@ -532,10 +518,10 @@ class _Page_receptState extends State<Page_recept> {
                             if (userNameSnapshot.connectionState == ConnectionState.waiting) {
                               return CircularProgressIndicator();
                             } else if (userNameSnapshot.hasError) {
-                              return Text("Ошибка загрузки имени", style: TextStyle(color: Colors.red));
+                              return Text("Name loading error", style: TextStyle(color: Colors.red));
                             }
 
-                              return SizedBox.shrink(); // Если имени нет, ничего не отображать
+                              return SizedBox.shrink();
                             }
 
                         ),

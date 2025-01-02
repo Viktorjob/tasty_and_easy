@@ -28,17 +28,17 @@ class _StarRatingState extends State<StarRating> {
   Widget buildStar(int index) {
     IconData icon;
     if (_currentRating >= index + 1) {
-      icon = Icons.star; // Полная звезда
+      icon = Icons.star;
     } else if (_currentRating > index && _currentRating < index + 1) {
-      icon = Icons.star_half; // Половина звезды (показываем, если рейтинг больше 0)
+      icon = Icons.star_half;
     } else {
-      icon = Icons.star_border; // Пустая звезда
+      icon = Icons.star_border;
     }
 
     return GestureDetector(
       onTap: () {
         setState(() {
-          // Устанавливаем рейтинг, соответствующий индексу, чтобы можно было менять его в обе стороны
+
           _currentRating = index + 1.0;
         });
         widget.onRatingChanged(_currentRating);

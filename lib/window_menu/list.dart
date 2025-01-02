@@ -19,7 +19,7 @@ class _RecipeListState extends State<RecipeList> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF0B0E12) , // Здесь установите желаемый цвет для AppBar
+        backgroundColor: Color(0xFF0B0E12) ,
       ),
       backgroundColor: Color(0xFF0B0E12),
       body: StreamBuilder(
@@ -76,8 +76,8 @@ class _RecipeListState extends State<RecipeList> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.amber, // Задайте цвет золотой линии
-            width: 2.0, // Задайте толщину золотой линии
+            color: Colors.amber,
+            width: 2.0,
           ),
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),

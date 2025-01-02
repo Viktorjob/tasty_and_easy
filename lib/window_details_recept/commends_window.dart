@@ -12,25 +12,25 @@ void Comments_window(BuildContext context, String dishId, String userName) {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
     ),
-    backgroundColor: Colors.transparent, // Делаем фон прозрачным
+    backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (BuildContext context) {
       return DraggableScrollableSheet(
-        initialChildSize: 0.5, // Начальный размер (половина экрана)
-        minChildSize: 0.5, // Минимальный размер (половина экрана)
-        maxChildSize: 1.0, // Максимальный размер (весь экран)
+        initialChildSize: 0.5,
+        minChildSize: 0.5,
+        maxChildSize: 1.0,
         builder: (BuildContext context, ScrollController scrollController) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.white, // Цвет нижней части
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)), // Закругление верхних углов
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
             ),
             child: Padding(
               padding: EdgeInsets.only(
                 left: 16,
                 right: 16,
                 top: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 16, // Отступ снизу равен высоте клавиатуры
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -52,7 +52,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Отображение комментариев из Firebase
+
                   Expanded(
                     child: StreamBuilder(
                       stream: commentsRef.onValue,
@@ -62,7 +62,7 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                           List commentsList = commentsMap.values.toList();
 
                           return ListView.builder(
-                            controller: scrollController, // Используем переданный ScrollController
+                            controller: scrollController,
                             itemCount: commentsList.length,
                             itemBuilder: (context, index) {
                               final comment = commentsList[index];
@@ -89,14 +89,14 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                       border: OutlineInputBorder(),
                     ),
                     onTap: () {
-                      // Когда пользователь нажимает на текстовое поле, раскройте на полный экран
+
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
                         builder: (context) => DraggableScrollableSheet(
-                          initialChildSize: 1.0, // Полный экран
-                          minChildSize: 0.5, // Минимальный размер
-                          maxChildSize: 1.0, // Максимальный размер
+                          initialChildSize: 1.0,
+                          minChildSize: 0.5,
+                          maxChildSize: 1.0,
                           builder: (context, scrollController) {
                             return Container(
                               decoration: BoxDecoration(
@@ -168,23 +168,21 @@ void Comments_window(BuildContext context, String dishId, String userName) {
                                     SizedBox(height: 8),
                                     ElevatedButton(
                                       onPressed: () async {
-                                        // Проверяем, залогинен ли пользователь
+                                        // Check if the user is logged in
                                         if (userName.isNotEmpty && commentController.text.isNotEmpty) {
-                                          // Получаем текущее время
+                                          // Get the current time
                                           String timestamp = DateTime.now().toIso8601String();
-
-                                          // Сохраняем комментарий в Firebase
+                                          // Save the comment to Firebase
                                           await commentsRef.push().set({
                                             'user': userName,
                                             'comment': commentController.text,
                                             'timestamp': timestamp,
                                           });
-
-                                          // Очищаем поле ввода
+                                          // Clear the input field
                                           commentController.clear();
                                         }
                                       },
-                                      child: Text("Отправить"),
+                                      child: Text("Send"),
                                     ),
                                     SizedBox(height: 16),
                                   ],

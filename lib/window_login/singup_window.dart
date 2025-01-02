@@ -47,7 +47,7 @@ class _SignUpScreen extends State<SignUpScreen> {
         passwordTextRepeatInputController.text) {
       SnackBarService.showSnackBar(
         context,
-        'Пароли должны совпадать',
+        'The passwords must match',
         true,
       );
       return;
@@ -59,15 +59,15 @@ class _SignUpScreen extends State<SignUpScreen> {
         password: passwordTextInputController.text.trim(),
       );
 
-      // Получаем текущего пользователя
+      // Get the current user
       User? user = userCredential.user;
 
-      // Сохраняем имя пользователя в базе данных Firestore или Realtime Database
+      // Save the username in the Firestore or Realtime Database
       await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
         'name': nameTextInputController.text,
       });
 
-      // Переход на главный экран
+      // Switch to the main screen
       navigator.pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
     } on FirebaseAuthException catch (e) {
       print(e.code);
@@ -75,14 +75,14 @@ class _SignUpScreen extends State<SignUpScreen> {
       if (e.code == 'email-already-in-use') {
         SnackBarService.showSnackBar(
           context,
-          'Такой Email уже используется, повторите попытку с использованием другого Email',
+          'This Email is already in use, try again using a different Email',
           true,
         );
         return;
       } else {
         SnackBarService.showSnackBar(
           context,
-          '----Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
+          '----Unknown Error! Try again or contact support.',
           true,
         );
       }
@@ -96,7 +96,7 @@ class _SignUpScreen extends State<SignUpScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color(0xFF0B0E12),
-        title: const Text('Зарегистрироваться'),
+        title: const Text('Sign up'),
       ),
       backgroundColor: Color(0xFF0B0E12),
       body: Padding(
@@ -111,20 +111,20 @@ class _SignUpScreen extends State<SignUpScreen> {
                 controller: emailTextInputController,
                 validator: (email) =>
                 email != null && !EmailValidator.validate(email)
-                    ? 'Введите правильный Email'
+                    ? 'Enter the correct Email'
                     : null,
                 decoration: const InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   border: OutlineInputBorder(),
-                  hintText: 'Введите Email' ,
+                  hintText: 'Enter Email' ,
                   hintStyle: TextStyle(color: Colors.white),
                 ),
-                style: TextStyle(color: Colors.white), // Цвет текста
+                style: TextStyle(color: Colors.white),
               ),
 
               const SizedBox(height: 30),
@@ -134,17 +134,17 @@ class _SignUpScreen extends State<SignUpScreen> {
                 obscureText: isHiddenPassword,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => value != null && value.length < 6
-                    ? 'Минимум 6 символов'
+                    ? 'Minimum 6 characters'
                     : null,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   border: const OutlineInputBorder(),
-                  hintText: 'Введите пароль',
+                  hintText: 'Enter your password',
                   hintStyle: TextStyle(color: Colors.white),
                   suffix: InkWell(
                     onTap: togglePasswordView,
@@ -156,7 +156,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                style: TextStyle(color: Colors.white), // Цвет текста
+                style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 30),
               TextFormField(
@@ -165,18 +165,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                 obscureText: isHiddenPassword,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => value != null && value.length < 6
-                    ? 'Минимум 6 символов'
+                    ? 'Minimum 6 characters'
                     : null,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   hintStyle: TextStyle(color: Colors.white),
                   border: const OutlineInputBorder(),
-                  hintText: 'Введите пароль еще раз',
+                  hintText: 'Enter the password again',
                   suffix: InkWell(
                     onTap: togglePasswordView,
                     child: Icon(
@@ -187,17 +187,17 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                style: TextStyle(color: Colors.white), // Цвет текста
+                style: TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: signUp,
-                child: const Center(child: Text('Регистрация')),
+                child: const Center(child: Text('Registration')),
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.amber,
                   padding: EdgeInsets.symmetric(
                       horizontal: 20.0,
-                      vertical: 8.0), // Отступы кнопки
+                      vertical: 8.0),
                 ),
               ),
 
@@ -207,7 +207,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                 controller: nameTextInputController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите ваше имя';
+                    return 'Enter your name';
                   }
                   return null;
                 },
@@ -219,7 +219,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     borderSide: BorderSide(color: Colors.amber),
                   ),
                   border: OutlineInputBorder(),
-                  hintText: 'Введите ваше имя',
+                  hintText: 'Enter your name',
                   hintStyle: TextStyle(color: Colors.white),
                 ),
                 style: TextStyle(color: Colors.white),

@@ -43,7 +43,7 @@ class _ListDishesState extends State<ListDishes> {
         title: isSearching
             ? TextField(
           controller: searchController,
-          style: TextStyle(color: Colors.white), // Задаем цвет текста ввода
+          style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: 'Search...',
             hintStyle: TextStyle(color: Colors.white),
@@ -91,7 +91,7 @@ class _ListDishesState extends State<ListDishes> {
             },
           ),
         ],
-        iconTheme: IconThemeData(color: Colors.white),// для всех иконок
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder(
         stream: dbRef!.onValue,
@@ -143,9 +143,6 @@ class _ListDishesState extends State<ListDishes> {
   }
 }
 
-// The rest of your ListItem and other code remains unchanged.
-
-
 class ListItem extends StatelessWidget {
   final Map user1;
   final String SSS;
@@ -167,7 +164,7 @@ class ListItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20), // Задаем общий радиус для всех углов
+          borderRadius: BorderRadius.circular(20),
           child: Container(
             decoration: BoxDecoration(
               boxShadow: const [
@@ -185,7 +182,7 @@ class ListItem extends StatelessWidget {
                   padding: const EdgeInsets.all(4.0),
                   decoration: BoxDecoration(
                     color: Colors.amber,
-                    borderRadius: BorderRadius.circular(20), // Закругленные углы
+                    borderRadius: BorderRadius.circular(20),
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.black26,
@@ -195,7 +192,7 @@ class ListItem extends StatelessWidget {
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20), // Закругленные углы для изображения
+                    borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       user1['image_url'].toString(),
                       fit: BoxFit.cover,
@@ -230,7 +227,7 @@ class ListItem extends StatelessWidget {
                                   color: Colors.white,
                                   size: 15,
                                 ),
-                                SizedBox(width: 10), // Расстояние между иконкой и текстом
+                                SizedBox(width: 10),
                                 Text(
                                   '${user1['number_of_likes']}',
                                   style: TextStyle(
@@ -240,7 +237,7 @@ class ListItem extends StatelessWidget {
                                 ),
                                 SizedBox(width: 10),
                                 Icon(
-                                  Icons.access_time, // Иконка сердца
+                                  Icons.access_time,
                                   color: Colors.white,
                                   size: 15,
                                 ),

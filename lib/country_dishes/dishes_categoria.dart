@@ -6,28 +6,26 @@ import 'package:tasty_and_easy/window_details_recept/listdishes.dart';
 class country_dish extends StatefulWidget {
   const country_dish({Key? key, required this.country_dish_name}) : super(key: key);
 
-  final String country_dish_name; // Добавляем поле country_dish_name
+  final String country_dish_name;
 
   @override
   _country_dish createState() => _country_dish();
 }
 class _country_dish extends State<country_dish> {
-  late Query dbRef; // Переменная для хранения ссылки на базу данных
+  late Query dbRef; // Variable to store the reference to the database
 
   @override
   void initState() {
     super.initState();
-    // Инициализируем dbRef внутри initStatez
     dbRef = FirebaseDatabase.instance.reference().child('Country_categorise_dishes/${widget.country_dish_name}');
-    print('++++++++++++++');
-    print('Country_categorise_dishes/${widget.country_dish_name}'); // Выводим country_dish_name в консоль при инициализации
+    print('Country_categorise_dishes/${widget.country_dish_name}');
   }
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF0B0E12) , // Здесь установите желаемый цвет для AppBar
+        backgroundColor: Color(0xFF0B0E12) ,
         title: Text(widget.country_dish_name, style: const TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -72,10 +70,11 @@ class _country_dish extends State<country_dish> {
   Widget listItem({required Map user}) {
 
     String? category = user['name'];
+    /*
     print('++++++++++++++');
     print(user['name']);
     print('++++++++++++++');
-
+    */
     return InkWell(
       onTap: () {
         print('Tapped on $category');
@@ -91,8 +90,8 @@ class _country_dish extends State<country_dish> {
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.amber, // Задайте цвет золотой линии
-            width: 2.0, // Задайте толщину золотой линии
+            color: Colors.amber,
+            width: 2.0,
           ),
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),

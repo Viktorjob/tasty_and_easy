@@ -41,7 +41,7 @@ class _AccountScreenState extends State<Accountwindow> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Проверяем, аутентифицирован ли пользователь
+            // Check if the user is authenticated
             if (user != null)
               FutureBuilder(
                 future: FirebaseFirestore.instance.collection('users').doc(user!.uid).get(),
@@ -54,14 +54,14 @@ class _AccountScreenState extends State<Accountwindow> {
                       print('User Name: $userName');
 
 
-                      return Text('Привет, $userName!', style: TextStyle(color: Colors.white));
+                      return Text('Hi, $userName!', style: TextStyle(color: Colors.white));
                     } else {
-                      return Text('Привет!', style: TextStyle(color: Colors.white));
+                      return Text('Hello!', style: TextStyle(color: Colors.white));
                     }
                   }
                 },
               ),
-            Text('Ваш Email: ${user?.email}', style: TextStyle(color: Colors.white, fontSize: 12,)),
+            Text('Your Email: ${user?.email}', style: TextStyle(color: Colors.white, fontSize: 12,)),
             if (user == null)
               TextButton(
                 onPressed: () {
@@ -75,7 +75,7 @@ class _AccountScreenState extends State<Accountwindow> {
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.0,
                     vertical: 8.0,
-                  ), // Отступы кнопки
+                  ),
                 ),
                 child: const Text(
                   'Login',
@@ -91,7 +91,7 @@ class _AccountScreenState extends State<Accountwindow> {
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.0,
                     vertical: 8.0,
-                  ), // Отступы кнопки
+                  ),
                 ),
                 onPressed: () => signOut(),
                 child: const Text(

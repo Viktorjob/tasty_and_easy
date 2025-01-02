@@ -303,11 +303,11 @@ class _FirstPageState extends State<FirstPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.bookmark_border, // Иконка сердца
+                                          Icons.bookmark_border,
                                           color: Colors.white,
                                           size: 15,
                                         ),
-                                        SizedBox(width: 10), // Расстояние между иконкой и текстом
+                                        SizedBox(width: 10),
                                         Text(
                                           mostPopularDishlike!,
                                           style: TextStyle(
@@ -317,7 +317,7 @@ class _FirstPageState extends State<FirstPage> {
                                         ),
                                         SizedBox(width: 10),
                                         Icon(
-                                          Icons.access_time, // Иконка сердца
+                                          Icons.access_time,
                                           color: Colors.white,
                                           size: 15,
                                         ),

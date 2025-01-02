@@ -16,7 +16,7 @@ class home extends StatelessWidget {
     );
   }
 }
-// ...
+
 
 class BottomNavigationBarExample extends StatefulWidget {
   const BottomNavigationBarExample({Key? key});
@@ -53,12 +53,12 @@ class _BottomNavigationBarExampleState
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 3, // Высота полоски
-            color: Colors.amber, // Цвет полоски
+            height: 3,
+            color: Colors.amber,
           ),
           Container(
             decoration: BoxDecoration(
-              color: Color(0xFF0B0E12), // Фон для нижней навигационной панели
+              color: Color(0xFF0B0E12),
               border: Border(
                 top: BorderSide(color: Color(0xFF0B0E12), width: 8.0),
               ),

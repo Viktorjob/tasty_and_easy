@@ -23,7 +23,7 @@ void filtersDetailsWindow(
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.amber, // Золотая линия
+                  color: Colors.amber,
                   width: 2.0,
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -108,7 +108,6 @@ void filtersDetailsWindow(
                   ),
                   ButtonBar(
                     alignment: MainAxisAlignment.spaceAround,
-                    // Распределение кнопок по ширине окна
                     layoutBehavior: ButtonBarLayoutBehavior.padded,
                     children: [
                       TextButton(
@@ -121,7 +120,7 @@ void filtersDetailsWindow(
                           backgroundColor: Colors.amber,
                           padding: EdgeInsets.symmetric(
                               horizontal: 20.0,
-                              vertical: 8.0), // Отступы кнопки
+                              vertical: 8.0),
                         ),
                         child: Text(
                           'Apply',
@@ -140,7 +139,7 @@ void filtersDetailsWindow(
                           backgroundColor: Colors.amber,
                           padding: EdgeInsets.symmetric(
                               horizontal: 20.0,
-                              vertical: 8.0), // Отступы кнопки
+                              vertical: 8.0),
                         ),
                         child: Text(
                           'Close',

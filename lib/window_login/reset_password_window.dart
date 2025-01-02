@@ -38,14 +38,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       if (e.code == 'user-not-found') {
         SnackBarService.showSnackBar(
           context,
-          'Такой email незарегистрирован!',
+          'This email is unregistered!',
           true,
         );
         return;
       } else {
         SnackBarService.showSnackBar(
           context,
-          'Неизвестная ошибка! Попробуйте еще раз или обратитесь в поддержку.',
+          'Unknown error! Try again or contact support.',
           true,
         );
         return;
@@ -53,7 +53,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
 
     const snackBar = SnackBar(
-      content: Text('Сброс пароля осуществен. Проверьте почту'),
+      content: Text('Resetting the password is done. Check your e-mail'),
       backgroundColor: Colors.green,
     );
 
@@ -68,7 +68,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color(0xFF0B0E12),
-        title: const Text('Сброс пароля'),
+        title: const Text('Password reset'),
       ),
       backgroundColor: Color(0xFF0B0E12),
       body: Padding(
@@ -83,29 +83,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 controller: emailTextInputController,
                 validator: (email) =>
                 email != null && !EmailValidator.validate(email)
-                    ? 'Введите правильный Email'
+                    ? 'Enter the correct Email'
                     : null,
                 decoration: const InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber), // Цвет линии при фокусе
+                    borderSide: BorderSide(color: Colors.amber),
                   ),
                   hintStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(),
-                  hintText: 'Введите Email',
+                  hintText: 'Enter Email',
                 ),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: resetPassword,
-                child: const Center(child: Text('Сбросить пароль')),
+                child: const Center(child: Text('Password reset')),
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.amber,
                   padding: EdgeInsets.symmetric(
                       horizontal: 20.0,
-                      vertical: 8.0), // Отступы кнопки
+                      vertical: 8.0),
                 ),
               ),
             ],
