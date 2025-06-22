@@ -1,4 +1,5 @@
 🍽️ Tasty and Easy
+
 📌 Application Description
 Tasty and Easy is a modern mobile application built with Flutter for discovering and cooking a variety of recipes.
 The app allows users to easily search for recipes, save them, use filters, and upload their own recipes with images.
