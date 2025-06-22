@@ -1,11 +1,11 @@
-### 🍽️ Tasty and Easy
+# 🍽️ Tasty and Easy
 
 ## 📌 Application Description
 Tasty and Easy is a modern mobile application built with Flutter for discovering and cooking a variety of recipes.
 The app allows users to easily search for recipes, save them, use filters, and upload their own recipes with images.
 The project uses Firebase for data storage and authentication.
 
-### ✨ Key Features
+# ✨ Key Features
 
 ## 🔐 Authentication & Onboarding
 
@@ -59,7 +59,7 @@ Users can log out at any time
 
 ## 🧱 Technical Stack
 
-# ✅ Technologies
+### ✅ Technologies
 
 Frontend: Flutter
 
@@ -77,7 +77,7 @@ Validation: email_validator
 
 Icons & Design: flutter_launcher_icons
 
-# 📦 pubspec.yaml – excerpt
+### 📦 pubspec.yaml – excerpt
 
 yaml
 Kopiuj
