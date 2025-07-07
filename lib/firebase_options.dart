@@ -40,16 +40,16 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBPLoWoH4FL6oRNiYu0pB_m0OSWkcbCShM',
-    appId: '1:1085150326123:android:7e5b9ed0ab05013576302e',
+    apiKey: 'Your api-key',
+    appId: 'Your ID',
     messagingSenderId: '1085150326123',
     projectId: 'book-of-goodies',
     storageBucket: 'book-of-goodies.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBr8HYkn3KCgv3F6vvILpVrtQWHyecREfk',
-    appId: '1:1085150326123:ios:e6c0be07abdb734d76302e',
+    apiKey: 'Your api-key',
+    appId: 'Your ID',
     messagingSenderId: '1085150326123',
     projectId: 'book-of-goodies',
     storageBucket: 'book-of-goodies.appspot.com',
