@@ -1,4 +1,5 @@
 # 🍽️ Tasty and Easy
+**👇 See Tasty and Easy in action (GIF demo below, might take a few seconds to load):**
 ![tastyandeasy-ezgif com-resize](https://github.com/user-attachments/assets/9c65489a-00a4-412d-947b-94f6836fea54)
 
 ## 📌 Application Description
