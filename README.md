@@ -1,4 +1,5 @@
 # 🍽️ Tasty and Easy
+![tastyandeasy-ezgif com-resize](https://github.com/user-attachments/assets/9c65489a-00a4-412d-947b-94f6836fea54)
 
 ## 📌 Application Description
 Tasty and Easy is a modern mobile application built with Flutter for discovering and cooking a variety of recipes.
@@ -98,5 +99,5 @@ dependencies:
   intl: ^0.19.0
   font_awesome_flutter: ^10.4.0
   uuid: ^4.2.1
-  ![tastyandeasy-ezgif com-resize](https://github.com/user-attachments/assets/9c65489a-00a4-412d-947b-94f6836fea54)
+  
 
